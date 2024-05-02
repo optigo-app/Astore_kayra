@@ -419,13 +419,13 @@ export default function Header() {
       let ProductApiData2 = JSON.parse(localStorage.getItem("allproductlist"));
       let newProData = JSON.parse(localStorage.getItem("searchdata"));
 
-      let finalData;
-      if(location?.pathname == "/productpage"){
-        finalData = newProData.length? newProData :ProductApiData2
-      }else{
-        finalData = ProductApiData2 
-      }
-      // let finalData = newProData?.length? newProData :ProductApiData2
+      // let finalData;
+      // if(location?.pathname == "/productpage"){
+      //   finalData = newProData?.length> 0 ? newProData :ProductApiData2
+      // }else{
+      //   finalData = ProductApiData2 
+      // }
+      let finalData = newProData?.length > 0 ? newProData : ProductApiData2
 
       console.log('finalData--', finalData);
 
@@ -448,11 +448,13 @@ export default function Header() {
           toggleOverlay();
         } else {
           setGSearch([]);
+          toggleOverlay();
         }
       } else {
         // navigation('/productpage');
         setGSearch([]);
-        // toggleOverlay();
+        // navigation('/productpage');
+        toggleOverlay();
       }
     }
   }
@@ -948,11 +950,11 @@ export default function Header() {
                       </li>
                     </Tooltip>
                   </Badge>
-                  <li onClick={toggleOverlay} style={{}}>
+                  {location?.pathname === "/productpage"  && <li onClick={toggleOverlay} style={{}}>
                     <IoSearchOutline
                       style={{ height: "20px", cursor: "pointer", width: "20px" }}
                     />
-                  </li>
+                  </li>}
                   <Badge
                     badgeContent={getCartListCount}
                     max={1000}
@@ -1285,11 +1287,11 @@ export default function Header() {
                         </li>
                       </Tooltip>
                     </Badge>
-                    <li onClick={toggleOverlay} style={{}}>
+                    {location?.pathname === "/productpage"  &&<li onClick={toggleOverlay} style={{}}>
                       <IoSearchOutline
                         style={{ height: "20px", cursor: "pointer", width: "20px" }}
                       />
-                    </li>
+                    </li>}
                     <Badge
                       badgeContent={getCartListCount}
                       max={1000}
@@ -1540,7 +1542,7 @@ export default function Header() {
                     </Tooltip>
                   </Badge>
 
-                  <li onClick={toggleOverlay} style={{ listStyle: 'none', textAlign: 'center', marginInline: '10px' }}>
+                  {location?.pathname === "/productpage"  && <li onClick={toggleOverlay} style={{ listStyle: 'none', textAlign: 'center', marginInline: '10px' }}>
                     <IoSearchOutline
                       style={{
                         height: "20px", cursor: "pointer", width: "20px",
@@ -1548,7 +1550,7 @@ export default function Header() {
                       }}
                       className="mobileViewSmilingTop2Icone"
                     />
-                  </li>
+                  </li>}
                   <Badge
                     badgeContent={getCartListCount}
                     max={1000}
