@@ -1576,27 +1576,32 @@ const ProductList = () => {
     const colorWiseImageData = JSON.parse(localStorage.getItem('colorDataImages'));
     const productAutoCode = product?.autocode;
     const productColorName = color;
-    console.log("color--", productColorName);
+    // console.log("color--", productColorName);
+    
+    // console.log("colorWiseImageData--", colorWiseImageData);
 
     if (!colorWiseImageData) {
       return [];
     }
 
-    if (data.IsColorWiseImages === 1) {
+    if (data.IsColorWiseImages == 1) {
       const matchingData = colorWiseImageData.filter(imageDataItem => (
-        productAutoCode === imageDataItem.autocode && productColorName === imageDataItem.colorname
+        productAutoCode === imageDataItem.autocode && 
+        productColorName.toLowerCase() === imageDataItem.colorname.toLowerCase()
       ));
+      
+      // console.log('isAvailable---', matchingData);
 
       const checkAvailabilityPromises = matchingData.map(async (imageDataItem) => {
         const imagePath = uploadPath + '/' + data.ukey + convertPath(imageDataItem.imagepath);
         const isAvailable = await checkImageAvailability(imagePath);
-        console.log('isAvailable---', isAvailable);
         return { imagePath: imagePath.replace(/ /g, "%20"), isAvailable };
       });
 
       const imageData = await Promise.all(checkAvailabilityPromises);
       const availableImage = imageData.find(image => image.isAvailable);
 
+      // console.log('formedImgData',imagePath);
       if (availableImage) {
         const formedImgData = { [index]: availableImage.imagePath };
         setUpdateColorImage(formedImgData);
