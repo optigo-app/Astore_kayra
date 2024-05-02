@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import './Header.css'
 import Tooltip from '@mui/material/Tooltip';
 import { Badge, Dialog, Divider, Drawer, SwipeableDrawer, TextField } from "@mui/material";
@@ -410,15 +410,25 @@ export default function Header() {
     }
   };
 
+  let location = useLocation();
 
   const setGSearch = useSetRecoilState(searchData);
   function searchDataFucn(e) {
+    console.log('finalData--', location?.pathname === "/productpage");
     if (e.key === 'Enter') {
       let ProductApiData2 = JSON.parse(localStorage.getItem("allproductlist"));
-      let newProData = JSON.parse(localStorage.getItem("newProData"));
+      let newProData = JSON.parse(localStorage.getItem("searchdata"));
 
-      const finalData = newProData.length? newProData :ProductApiData2
-      console.log('data--', data);
+      let finalData;
+      if(location?.pathname == "/productpage"){
+        finalData = newProData.length? newProData :ProductApiData2
+      }else{
+        finalData = ProductApiData2 
+      }
+      // let finalData = newProData?.length? newProData :ProductApiData2
+
+      console.log('finalData--', finalData);
+
       if (finalData) {
         let searchText = e.target.value.toLowerCase();
         let data = finalData.filter((pd) => {
@@ -432,6 +442,7 @@ export default function Header() {
 
         
         if (data.length > 0) {
+          console.log("data---------",data);
           setGSearch(data);
           navigation('/productpage');
           toggleOverlay();

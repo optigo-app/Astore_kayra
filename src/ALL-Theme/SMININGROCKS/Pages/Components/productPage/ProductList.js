@@ -111,13 +111,15 @@ const ProductList = () => {
 
   console.log("alternativeData",newProData?.length?newProData:ProductApiData2);
 
-  useEffect(()=>{
-    if(newProData?.length){
-      localStorage.setItem("newProData",JSON.stringify(newProData))
-    }else{
-      localStorage.setItem("newProData",JSON.stringify([]))
-    }
-  },[newProData])
+  // useEffect(()=>{
+  //   // setTimeout(()=>{
+  //     if(newProData?.length > 0){
+  //       localStorage.setItem("newProData",JSON.stringify(newProData))
+  //     }else{
+  //       localStorage.setItem("newProData",JSON.stringify([]))
+  //     }
+  //   // },500)
+  // },[getSearchData])
 
   // console.log("filterCount", newProData?.length, ProductApiData2?.length, filterChecked);
 
@@ -159,7 +161,16 @@ const ProductList = () => {
     if (obj) {
       setCurrData(obj)
     }
+   
   }, [])
+
+  let location = useLocation();
+
+  // useEffect(()=>{
+  //   if(location?.pathname === "/productpage"){
+  //     setNewProData([])
+  //   }
+  // },[location])
 
   // useEffect(()=>{
   //   let currencyData = JSON.parse(localStorage.getItem("currencyData"))
@@ -373,10 +384,12 @@ const ProductList = () => {
   }
 
   useEffect(() => {
+    let searchData ;
     if (paramnameSetting(getnewMenuData.label) === "brand") {
       const data = ProductApiData2.filter((pd) => pd && pd.BrandName === paramdataSetting(getnewMenuData.label))
       if (data) {
         setNewProData(data)
+        searchData = data
       }
     }
 
@@ -384,6 +397,7 @@ const ProductList = () => {
       const data = ProductApiData2.filter((pd) => pd && pd.CollectionName === paramdataSetting(getnewMenuData.label))
       if (data) {
         setNewProData(data)
+        searchData = data
       }
     }
 
@@ -392,6 +406,7 @@ const ProductList = () => {
       const data = ProductApiData2.filter((pd) => pd && pd.CategoryName === paramdataSetting(getnewMenuData.label))
       if (data) {
         setNewProData(data)
+        searchData = data
       }
     }
 
@@ -399,7 +414,15 @@ const ProductList = () => {
       const data = ProductApiData2.filter((pd) => pd && pd.GenderName === paramdataSetting(getnewMenuData.label))
       if (data) {
         setNewProData(data)
+        searchData = data
       }
+    }
+
+    if(searchData){
+      console.log("search",searchData);
+      setTimeout(()=>{
+        localStorage.setItem("searchdata",JSON.stringify(searchData))
+      },100)
     }
   }, [getnewMenuData, ProductApiData2])
 
