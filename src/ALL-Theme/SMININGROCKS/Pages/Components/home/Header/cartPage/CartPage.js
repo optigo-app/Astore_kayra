@@ -395,7 +395,8 @@ export default function CartPage() {
 
   useEffect(() => {
 
-    setmtTypeOption(cartSelectData?.metal);
+    let mtType = `${cartSelectData?.metal} ${cartSelectData?.Purity}`
+    setmtTypeOption(mtType);
 
     let qualityColor = `${cartSelectData?.diamondquality}#${cartSelectData?.diamondcolor}`;
     setDiaQColOpt(qualityColor);
@@ -912,8 +913,6 @@ export default function CartPage() {
     const storeInit = JSON.parse(localStorage.getItem("storeInit"))
     const UserEmail = localStorage.getItem("registerEmail")
     const Customer_id = JSON.parse(localStorage.getItem("loginUserDetail"));
-
-
 
     let product = filterProdData[0]
 

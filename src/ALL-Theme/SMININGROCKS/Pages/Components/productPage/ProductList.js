@@ -1885,7 +1885,7 @@ const ProductList = () => {
                   onClick={() =>handlePageReload()} 
                   style={{ cursor: 'pointer', fontSize: '14px' }}>
                     {
-                      (Object.values(filterChecked)).filter(fc => fc.checked !== false).filter(fc => fc.checked !== undefined).length ?
+                      (Object.values(filterChecked)).filter(fc => fc.checked !== false).filter(fc => fc.checked !== undefined).length || newProData?.length > 0 ?
                         "Clear All"
                         :
                         `Product: ${ProductApiData2?.length}`

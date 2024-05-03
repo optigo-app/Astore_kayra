@@ -2374,7 +2374,7 @@ const ProdDetail = () => {
                       <div className="srAccContainer">
                         <div className="srFloat">
                           <span>
-                            MetalPurity: <b>{productData?.updMT?.split(" ")[1]}</b>
+                            MetalPurity: <b>{mtTypeOption?.split(" ")[1]}</b>
                           </span>
                           {/* <span>
                             <b>MetalWeight</b>: {productData?.MetalWeight}
@@ -2390,7 +2390,7 @@ const ProdDetail = () => {
                                 ? 0
                                 : daimondFilterData[0]?.Weight / 5)
                             ).toFixed(2)}</b> */}
-                            <b>{productData?.updGWT}</b>
+                            <b>{mtrdData?.N}</b>
                             {/* {daimondFilterData?.length && metalFilterData.length ? (
                               <>
                                 <b>GrossWeight</b>: {metalFilterData[0]?.Weight + (daimondFilterData[0]?.Weight / 5)}
@@ -2422,10 +2422,10 @@ const ProdDetail = () => {
                               : productData?.diamondweight}</b> */}
                             <b>{daimondFilterData?.length
                               ? (
-                                productData?.updDWT +
+                                mtrdData?.K +
                                 daimondFilterData[0]?.Weight
                               ).toFixed(2)
-                              : productData?.updDWT}</b>
+                              : mtrdData?.K}</b>
                             {/* <b>{productData?.updDWT}</b> */}
                           </span>
                           <span>
@@ -2435,9 +2435,9 @@ const ProdDetail = () => {
                               daimondFilterData[0]?.pieces
                               : productData?.diamondpcs}</b> */}
                             <b>{daimondFilterData?.length
-                              ? productData?.updDPCS +
+                              ? diaqcData?.M +
                               daimondFilterData[0]?.pieces
-                              : productData?.updDPCS}</b>
+                              : diaqcData?.M}</b>
                           </span>
 
                         </div>
@@ -2449,22 +2449,22 @@ const ProdDetail = () => {
                                 productData?.netwt +
                                 metalFilterData[0]?.Weight
                               ).toFixed(2)
-                              : productData?.netwt}</b> */}
-                            <b>{productData?.updNWT}</b>
+                              : productData?.updNWT}</b> */}
+                              {mtrdData?.I}
                           </span>
                           <span>
-                            DiamondQuality: <b>{productData?.diamondquality}</b>
+                            DiamondQuality: <b>{diaqcData?.H}</b>
                           </span>
                           <span>
                             DiamondColorname:{" "}
-                            <b>{productData?.diamondcolorname}</b>
+                            <b>{diaqcData?.J}</b>
                           </span>
                           <span>
                             NumberOfDiamonds:{" "}
                             <b>{daimondFilterData?.length
-                              ? productData?.updDPCS +
+                              ? diaqcData?.M +
                               daimondFilterData[0]?.pieces
-                              : productData?.updDPCS}</b>
+                              : diaqcData?.M}</b>
                             {/* <b>{daimondFilterData?.length
                               ? productData?.diamondpcs +
                               daimondFilterData[0]?.pieces
