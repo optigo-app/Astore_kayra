@@ -1385,7 +1385,7 @@ export default function CartPage() {
                                               color: "#7d7f85",
                                             }}
                                           >
-                                            METAL COLOR:
+                                            METAL COLOR :
                                           </label>
                                           <select
                                             style={{
@@ -1470,7 +1470,7 @@ export default function CartPage() {
                                                 marginTop: "10px",
                                               }}
                                             >
-                                              COLOR STONE:
+                                              COLOR STONE :
                                             </label>
                                             <select
                                               style={{
@@ -1516,7 +1516,7 @@ export default function CartPage() {
                                                 color: "#7d7f85",
                                               }}
                                             >
-                                              SIZE:
+                                              SIZE :
                                             </label>
                                             <select
                                               style={{
