@@ -90,7 +90,10 @@
     position: absolute;
     top: 50%;
     right: 0;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
+    margin: 0px;
+    /* left: 50%; */
+    left: 53%;
 }
 
 .quotaionFiltertable {

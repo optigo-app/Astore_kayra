@@ -17,19 +17,22 @@ import { Button, CircularProgress, TextField } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { checkMonth } from "../../../../Utils/globalFunctions/GlobalFunction";
+import { checkMonth, formatAmount } from "../../../../Utils/globalFunctions/GlobalFunction";
 import moment from "moment";
 import { CommonAPI } from "../../../../Utils/API/CommonAPI";
 import { addYears, subYears } from 'date-fns';
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
+import PrintIcon from '@mui/icons-material/Print';
 // import AlertPopup from '../../../../../../alertPopup/AlertPopup';
-const createData = (SrNo, Date, SKUNo, TotalDesign, Amount) => {
+const createData = (SrNo, Date, SKUNo, TotalDesign, Amount, PrintUrl) => {
     return {
         SrNo,
         Date,
         SKUNo,
         TotalDesign,
-        Amount
+        Amount,
+        PrintUrl
     };
 }
 
@@ -119,6 +122,13 @@ const headCells = [
         label: 'Total Amount',
         align: "right"
     },
+    {
+        id: 'Print',
+        numeric: false,
+        disablePadding: false,
+        label: 'Print',
+        align: "center"
+    },
 ];
 
 function EnhancedTableHead(props) {
@@ -186,7 +196,6 @@ const QuotationQuote = () => {
     const toDateRef = useRef(null);
 
     const handleRequestSort = (event, property) => {
-        console.log('property--', property);
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
@@ -387,10 +396,10 @@ const QuotationQuote = () => {
             if (response.Data?.rd) {
                 let rows = [];
                 response?.Data?.rd?.forEach((e, i) => {
-                    let dataa = createData(i + 1, e?.Date, e?.SKUNo, e?.TotalDesign, e?.Amount);
+                    let printUrl = atob(e?.PrintUrl);
+                    let dataa = createData(i + 1, e?.Date, e?.SKUNo, e?.TotalDesign, e?.Amount, printUrl);
                     rows?.push(dataa)
                 });
-                // console.log(rows);
                 setData(rows);
                 setFilterData(rows);
             } else {
@@ -414,6 +423,11 @@ const QuotationQuote = () => {
             inputTo.placeholder = 'Date To';
         }
     }, []);
+
+    const handlePrintUrl = (printUrl) => {
+        window.open(printUrl)
+    }
+ 
 
     return (
         <Box className='smilingSavedAddressMain salesApiSection' sx={{ padding: "20px", }}>
@@ -563,7 +577,16 @@ const QuotationQuote = () => {
                                             <TableCell align="center">{row.Date}</TableCell>
                                             <TableCell align="center">{row.SKUNo}</TableCell>
                                             <TableCell align="center">{row.TotalDesign}</TableCell>
-                                            <TableCell align="right">{row.Amount}</TableCell>
+                                            <TableCell align="right">{formatAmount(row?.Amount)}</TableCell>
+                                            <TableCell align="center">
+                                                
+                                                {/* <Link href={`${row.PrintUrl}`} target="_blank" rel="noopener noreferrer" underline="none"> */}
+                                                        <div onClick={() => handlePrintUrl(row?.PrintUrl)}>
+                                                            <PrintIcon   />
+                                                        </div>
+                                                    
+                                                {/* </Link> */}
+                                            </TableCell>
                                             {/* <TableCell align="right">{row.protein}</TableCell> */}
                                         </TableRow>
                                     );
