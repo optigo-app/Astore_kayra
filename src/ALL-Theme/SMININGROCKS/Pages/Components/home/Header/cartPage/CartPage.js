@@ -362,8 +362,8 @@ export default function CartPage() {
         ?
         ele.A === cartSelectData?.autocode &&
         ele.B === cartSelectData?.designno &&
-        ele.H === cSQopt?.split("_")[0] &&
-        ele.J === cSQopt?.split("_")[1]
+        ele.H === cSQopt?.split("-")[0] &&
+        ele.J === cSQopt?.split("-")[1]
         :
         ele.A === cartSelectData?.autocode &&
         ele.B === cartSelectData?.designno
@@ -395,7 +395,7 @@ export default function CartPage() {
 
   useEffect(() => {
 
-    let mtType = `${cartSelectData?.metal} ${cartSelectData?.Purity}`
+    let mtType = `${cartSelectData?.metal}`
     setmtTypeOption(mtType);
 
     let qualityColor = `${cartSelectData?.diamondquality}#${cartSelectData?.diamondcolor}`;
@@ -1385,7 +1385,7 @@ export default function CartPage() {
                                               color: "#7d7f85",
                                             }}
                                           >
-                                            METAL COLOR:
+                                            METAL COLOR :
                                           </label>
                                           <select
                                             style={{
@@ -1470,7 +1470,7 @@ export default function CartPage() {
                                                 marginTop: "10px",
                                               }}
                                             >
-                                              COLOR STONE:
+                                              COLOR STONE :
                                             </label>
                                             <select
                                               style={{
@@ -1516,7 +1516,7 @@ export default function CartPage() {
                                                 color: "#7d7f85",
                                               }}
                                             >
-                                              SIZE:
+                                              SIZE :
                                             </label>
                                             <select
                                               style={{
