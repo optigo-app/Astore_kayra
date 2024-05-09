@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
-import { Button, CircularProgress, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField } from '@mui/material';
+import { Button, Checkbox, Chip, CircularProgress, FormControlLabel, InputLabel, ListItemText, MenuItem, OutlinedInput, Radio, RadioGroup, Select, TextField } from '@mui/material';
 import "./QuotationJob.css";
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -25,6 +25,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { checkMonth } from '../../../../Utils/globalFunctions/GlobalFunction';
 import { CommonAPI } from '../../../../Utils/API/CommonAPI';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 const CustomSortIcon = ({ order }) => {
   return (
     <>
@@ -36,19 +37,17 @@ const CustomSortIcon = ({ order }) => {
 
 const QuotationJob = () => {
 
+  const [allChecked, setAllChecked] = useState(false);
   const [orderProm, setOrderProm] = useState('order');
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [filterData2, setFilterData2] = useState([]);
   const [searchVal, setSearchVal] = useState("");
   const [orderBy, setOrderBy] = useState('');
   const [order, setOrder] = useState('asc');
-  const [statusList, setStatusList] = useState([
-    // { id: 0, label: "All", value: "All" },
-    // { id: 1, label: "Pending", value: "Pending" },
-    // { id: 2, label: "In Production", value: "In Production" },
-  ]);
+  const [statusList, setStatusList] = useState([]);
   const [categoryList, setCategoryList] = useState([
     // { id: 0, label: "All", value: "All" },
     // { id: 1, label: "Bangle", value: "Bangle" },
@@ -176,13 +175,16 @@ const QuotationJob = () => {
 
   const fromDateRef = useRef(null);
   const toDateRef = useRef(null);
-
+  const [selectedStatus, setSelectedStatus] = useState([]);
+  
+  const [PrintUrl, setPrintUrl] = useState('');
 
   const handleOrderProms = (event) => {
     setOrderProm(event.target.value);
   };
   const handleStatus = (event) => {
-    setStatus(event.target.value);
+    // setStatus(event.target.value);
+    setSelectedStatus(event.target.value);
     // handleSearch(event, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm);
     handleSearch(event, searchVal, fromDate, toDate, metalPurity, MetalColor, category, event.target.value, orderProm);
   };
@@ -201,6 +203,7 @@ const QuotationJob = () => {
   moment.locale('en-gb');
 
   const columns = [
+    { id: 'checkbox', label: <Checkbox />, minWidth: 50, align: "center" },
     { id: 'Sr#', label: 'Sr No', minWidth: 85, align: "center" },
     { id: 'Date', label: 'Date', minWidth: 130, align: "center" },
     { id: 'SKUNO', label: 'SKU#', minWidth: 110, align: "center" },
@@ -220,11 +223,13 @@ const QuotationJob = () => {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    setAllChecked(false);
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+    setAllChecked(false);
   };
 
   const handleSearch = (eve, searchValue, fromDatess, todatess, metalPurities, MetalColors, categories, statuss, orderPromDate) => {
@@ -242,7 +247,6 @@ const QuotationJob = () => {
         search: false,
         metalPurity: false,
       }
-      console.log('search value---', statuss);
       if (searchValue !== "") {
         if (e?.["Sr#"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
           e?.["Date"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
@@ -331,6 +335,10 @@ const QuotationJob = () => {
         //  }
       }
 
+
+
+
+
       if (e?.MetalType?.toString()?.toLowerCase()?.includes(metalPurities?.toLowerCase()) || metalPurities?.toLowerCase() === "all") {
         flags.metalPurity = true;
       }
@@ -340,9 +348,35 @@ const QuotationJob = () => {
       if (e?.Category?.toString()?.toLowerCase()?.includes(categories?.toLowerCase()) || categories?.toLowerCase() === "all") {
         flags.category = true;
       }
-      if ((e?.ProgressStatusName?.toString()?.toLowerCase() === statuss?.toLowerCase()) || statuss?.toLowerCase() === "all") {
-        flags.status = true;
+
+
+
+
+      // if ((e?.ProgressStatusName?.toString()?.toLowerCase() === statuss?.toLowerCase()) || statuss?.toLowerCase() === "all") {
+      //   flags.status = true;
+      // }
+
+
+
+      if (!Array.isArray(statuss) || statuss?.length === 0) {
+        flags.status = true; // Show all data
+      } else {
+        // Check if any selected status matches the ProgressStatusName
+        if (Array.isArray(statuss)) {
+          if (statuss.includes(e?.ProgressStatusName)) {
+            flags.status = true;
+          }
+        } else {
+          if (e?.ProgressStatusName === statuss || statuss === "all") {
+            flags.status = true;
+          }
+        }
       }
+
+
+
+
+
 
       if (flags.dateFrom === true && flags.dateTo === true && flags.status === true && flags.category === true && flags.MetalColor === true && flags.search === true && flags.metalPurity === true) {
         filteredData.push(e);
@@ -368,6 +402,7 @@ const QuotationJob = () => {
     setSearchVal("");
     handleSearch(eve, "", null, null, metalPurityList[0]?.value, metalColorList[0]?.value, categoryList[0]?.value, statusList[0]?.value, "order");
     setFilterData(data);
+    setSelectedStatus([]);
   }
 
   const resetAllFilt = () => {
@@ -404,6 +439,7 @@ const QuotationJob = () => {
   }
 
   function getComparator(order, orderBy) {
+
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy);
@@ -496,11 +532,13 @@ const QuotationJob = () => {
       // {"CurrencyRate":"1","FrontEnd_RegNo":"95oztttesi0o50vr","Customerid":"856"}
       const encodedCombinedValue = btoa(combinedValue);
       const body = {
-        "con": `{\"id\":\"Store\",\"mode\":\"getjob\",\"appuserid\":\"${data.email1}\"}`,
+        "con": `{\"id\":\"Store\",\"mode\":\"getjob\",\"appuserid\":\"${data?.email1}\"}`,
         "f": "zen (cartcount)",
         p: encodedCombinedValue
       };
       const response = await CommonAPI(body);
+      
+      setPrintUrl(response?.Data?.rd1[0]?.PrintUrl);
       if (response.Data?.rd) {
 
         let datass = [];
@@ -510,7 +548,9 @@ const QuotationJob = () => {
         let allMetalPurity = [];
         response?.Data?.rd?.forEach((e, i) => {
           let obj = { ...e };
+          obj["checkbox"] = <Checkbox />;
           obj["Sr#"] = i + 1;
+          obj["isJobSelected"] = false;
           datass?.push(obj);
           let findStatus = allStatus?.findIndex((ele, ind) => ele?.label === e?.ProgressStatusName);
           let findCategory = allCategory?.findIndex((ele, ind) => ele?.label === e?.Category);
@@ -529,7 +569,7 @@ const QuotationJob = () => {
             allMetalPurity?.push({ id: allMetalPurity?.length, label: e?.MetalType, value: e?.MetalType, });
           }
         });
-        allStatus?.unshift({ id: allStatus?.length, label: "ALL", value: "ALL" });
+        // allStatus?.unshift({ id: allStatus?.length, label: "ALL", value: "ALL" });
         allCategory?.unshift({ id: allCategory?.length, label: "ALL", value: "ALL" });
         allMetalColor?.unshift({ id: allMetalColor?.length, label: "ALL", value: "ALL" });
         allMetalPurity?.unshift({ id: allMetalPurity?.length, label: "ALL", value: "ALL" });
@@ -565,6 +605,119 @@ const QuotationJob = () => {
     }
   }, []);
 
+  const handlePrintJobs = async(filterdatas) => {
+      let onlyTrueJobjs = filterdatas?.filter((e) => e?.isJobSelected === true);
+      let jobStringArr = onlyTrueJobjs?.map((e) => e?.JobNo)?.toString();
+
+      const storedData = localStorage.getItem('loginUserDetail');
+      const data = JSON.parse(storedData);
+      const customerid = data?.id;
+
+      let fromdate =  moment(fromDate)
+      let enddate =  moment(toDate)
+      let daytextf = fromdate?._i?.$d;
+      let daytextt = enddate?._i?.$d;
+
+      const startDate = new Date(daytextf);
+      const endDate = new Date(daytextt);
+
+      const formattedStartDate = moment(startDate).format('DD MMM YYYY');
+      const formattedEndDate = moment(endDate).format('DD MMM YYYY');
+
+
+      const Farr = [
+        {
+          Customerid:`${customerid}`,
+          DateFill:`${orderProm}`,
+          fromdate:`${fromDate === null ? '' : formattedStartDate}`,
+          todate:`${toDate === null ? '' : formattedEndDate}`,
+          Search:`${searchVal}`,
+          Catgeory:`${category?.toLowerCase() === 'all' ? '' : category}`,
+          MetalPurity:`${metalPurity?.toLowerCase() === 'all' ? '' : metalPurity}`,
+          MetalColor:`${MetalColor?.toLowerCase() === 'all' ? '' : MetalColor}`,
+          JobList:`${jobStringArr}`,
+          StatusF:`${selectedStatus}`,
+          order:`${'desc'}`,
+          orderBy:`${orderBy === '' ? 'Date' : orderBy}`,
+          // orderProm:`${orderProm}`,
+        }
+      ]
+      console.log(Farr);
+      const jsonConvert = btoa((JSON.stringify(Farr)));
+      // const decodedData = (atob(jsonConvert));
+      const printMainUrl = `${PrintUrl}&Farr=${jsonConvert}`;
+      window.open(printMainUrl)
+
+  }
+  const handleCheckboxChange = (event, rowIndex) => {
+    // const newData = [...filterData]; // Make a copy of the data array
+    // newData[rowIndex].isJobSelected = event.target.checked; // Update isJobSelected property
+    // setFilterData(newData); // Update state with the modified data
+
+     const newData = filterData.map((row, index) => {
+    if (index === page * rowsPerPage + rowIndex) {
+      return {
+        ...row,
+        isJobSelected: event.target.checked,
+      };
+    }
+    return row;
+  });
+
+  setFilterData(newData);
+
+
+  };
+
+  // const handleMasterCheckboxChange = (event) => {
+  //   const isChecked = event.target.checked;
+  //   setAllChecked(isChecked);
+    
+  //   const startIndex = page * rowsPerPage;
+  //   const endIndex = Math.min((page + 1) * rowsPerPage, filterData.length);
+    
+  //   // const newData = filterData.map((row, index) => ({
+  //   //   ...row,
+  //   //   isJobSelected: (index >= startIndex && index < endIndex) ? isChecked : row.isJobSelected,
+  //   // }));
+    
+
+  // const newData = filterData.map((row, index) => ({
+  //   ...row,
+  //   isJobSelected: (page * rowsPerPage <= index && index < (page + 1) * rowsPerPage) ? isChecked : row.isJobSelected,
+  // }));
+
+  // setFilterData(newData);
+  // setAllChecked(isChecked);
+    
+  //   // setFilterData(newData);
+  // };
+  const handleMasterCheckboxChange = (event) => {
+    const isChecked = event.target.checked;
+  
+    // const newData = filterData.map((row, index) => ({
+    //   ...row,
+    //   isJobSelected: (isChecked && index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) || row.isJobSelected,
+    // }));
+    const newData = filterData.map((row, index) => ({
+      ...row,
+      isJobSelected: (isChecked && index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) || row.isJobSelected,
+    }));
+  
+    setFilterData(newData);
+    setAllChecked(isChecked);
+  };
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
   return (
     <Box className='smilingSavedAddressMain quotationFiltersText' sx={{ padding: "20px", }}>
       <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -654,7 +807,34 @@ const QuotationJob = () => {
         </Box>
         <Box sx={{ position: "relative", padding: "0 15px 35px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
           <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-16px", }}>Status</label>
-          <Select
+              <Select
+                labelId="demo-multiple-checkbox-label"
+                id="demo-multiple-checkbox"
+                multiple
+                value={selectedStatus} // Assuming selectedStatus is an array of selected values
+                onChange={handleStatus} // Assuming handleStatus function receives selected values
+                MenuProps={MenuProps}
+                // input={<OutlinedInput label="Status" />}
+                className='statusSelect'
+                size='small'
+                renderValue={(selected) => (
+                  <div>
+                    {selected?.map((value) => (
+                      <div></div>
+                      // <Chip key={value} label={value} />
+                    ))}
+                  </div>
+                )}
+              
+              >
+              {statusList?.map((status) => (
+                <MenuItem key={status.id} value={status.value}>
+                  <Checkbox checked={selectedStatus?.indexOf(status.value) > -1} />
+                  <ListItemText primary={status.label} />
+                </MenuItem>
+              ))}
+            </Select>
+          {/* <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={statuse}
@@ -667,7 +847,7 @@ const QuotationJob = () => {
                 return <MenuItem value={e?.value} key={i}>{e?.label}</MenuItem>
               })
             }
-          </Select>
+          </Select> */}
         </Box>
         <Box sx={{ position: "relative", padding: "0 15px 35px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
           <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-16px", }}>Category</label>
@@ -731,6 +911,9 @@ const QuotationJob = () => {
           <Button sx={{ padding: 0, maxWidth: "max-content", minWidth: "max-content", position: "absolute", right: "20px", color: "#757575" }}
             onClick={eve => handleSearch(eve, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm)}><SearchIcon /></Button>
         </Box>
+        <Box sx={{ padding: "0 0px 40px 0", }} className="QuotationJobAllBtnSec">
+          <Button variant='contained' className='muiSmilingRocksBtn' sx={{ padding: "7px 10px", minWidth: "max-content", background: "#7d7f85" }} onClick={(eve) => handlePrintJobs(filterData)}><PrintIcon sx={{ color: "#fff !important" }} /></Button>
+        </Box>
       </Box>
 
       <Box sx={{ padding: "0 0 35px 0", marginTop: "-15px" }}>
@@ -740,17 +923,23 @@ const QuotationJob = () => {
               <Table stickyHeader aria-label="sticky table" className='quotaionFiltertable'>
                 <TableHead>
                   <TableRow>
-                    {columns.map((column) => (
+                  <TableCell style={{backgroundColor: "#ebebeb", color: "#6f6f6f"}}>
+                    <Checkbox
+                      checked={allChecked}
+                      onChange={handleMasterCheckboxChange}
+                    />
+                  </TableCell>  
+                    {columns?.slice(1)?.map((column) => (
                       <TableCell
-                        key={column.id}
+                        key={column?.id}
                         align={column.align}
                         style={{ minWidth: column.minWidth, backgroundColor: "#ebebeb", color: "#6f6f6f", }}
-                        onClick={() => handleRequestSort(column.id)}
+                        onClick={() => handleRequestSort(column?.id)}
                       >
                         {column.label}
                         {orderBy === column.id ? (
                           <span style={{ display: 'flex', alignItems: 'center' }}>
-                            {orderBy === column.id && (<CustomSortIcon order={order} />)}
+                            {orderBy === column?.id && (<CustomSortIcon order={order} />)}
                           </span>
                         ) : null}
                       </TableCell>
@@ -758,39 +947,34 @@ const QuotationJob = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* {stableSort(filterData, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                          {columns.map((column) => {
-                            const value = row[column.id];
-                            return (
-                              <TableCell key={column.id} align={column.align}>
-                                {column.format && typeof value === 'number'
-                                  ? column.format(value)
-                                  : value}
-                              </TableCell>
-                            );
-                          })}
-                        </TableRow>
-                      );
-                    })} */}
+           
 
                   {stableSort(filterData, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, rowIndex) => {
+                    ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    ?.map((row, rowIndex) => {
                       let serialNumber = page * rowsPerPage + rowIndex + 1;
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                           {columns.map((column, index) => {
-                            const value = row[column.id];
+                            const value = row[column?.id];
                             return (
-                              <TableCell key={column.id} align={column.align}>
-                                {column.id === 'Sr#' ? serialNumber : column.format && typeof value === 'number'
-                                  ? column.format(value)
-                                  : value}
-                              </TableCell>
+                              <TableCell key={column?.id} align={column?.align}>
+                              {column.id === 'Sr#' ? serialNumber : 
+                                column?.id === 'checkbox' ? 
+                                  <Checkbox 
+                                    checked={row?.isJobSelected} 
+                                    onChange={(event) => handleCheckboxChange(event, rowIndex)} 
+                                  /> 
+                                  : 
+                                  column?.format && typeof value === 'number'
+                                    ? column.format(value)
+                                    : value}
+                            </TableCell>
+                              // <TableCell key={column?.id} align={column?.align}>
+                              //   {column.id === 'Sr#' ? serialNumber : column?.format && typeof value === 'number'
+                              //     ? column.format(value)
+                              //     : value}
+                              // </TableCell>
                             );
                           })}
                         </TableRow>

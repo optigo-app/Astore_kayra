@@ -27,17 +27,19 @@ import SearchIcon from '@mui/icons-material/Search';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Label } from "@mui/icons-material";
-import { checkMonth } from "../../../../Utils/globalFunctions/GlobalFunction";
+import { checkMonth, formatAmount } from "../../../../Utils/globalFunctions/GlobalFunction";
 import moment from "moment";
 import { CommonAPI } from "../../../../Utils/API/CommonAPI";
 import Swal from 'sweetalert2';
-const createData = (SrNo, Date, StockDocumentNo, TotalDesign, Amount) => {
+import PrintIcon from '@mui/icons-material/Print';
+const createData = (SrNo, Date, StockDocumentNo, TotalDesign, Amount, PrintUrl) => {
     return {
         SrNo,
         Date,
         StockDocumentNo,
         TotalDesign,
-        Amount
+        Amount,
+        PrintUrl
     };
 }
 
@@ -135,6 +137,13 @@ const headCells = [
         disablePadding: false,
         label: 'Total Amount',
         align: "right"
+    },
+    {
+        id: 'Print',
+        numeric: true,
+        disablePadding: false,
+        label: 'Print',
+        align: "center"
     },
 ];
 
@@ -290,7 +299,6 @@ const Sales = () => {
                     let todat = moment(todates);
                     let cutDat = moment(cutDate);
                     if(moment(fromdat).isSameOrBefore(todat)){
-                        console.log("in if");
                         const isBetween = cutDat.isBetween(fromdat, todat, null, '[]');
                         if (isBetween || cutDat.isSame(fromdat) || cutDat.isSame(todat)) {
                             flags.dateTo = true;
@@ -377,7 +385,8 @@ const Sales = () => {
             if (response.Data?.rd) {
                 let rows = [];
                 response?.Data?.rd?.forEach((e, i) => {
-                    let dataa = createData(i + 1, e?.Date, e?.StockDocumentNo, e?.TotalDesign, e?.Amount);
+                    let printUrl = atob(e?.PrintUrl);
+                    let dataa = createData(i + 1, e?.Date, e?.StockDocumentNo, e?.TotalDesign, e?.Amount, printUrl);
                     rows?.push(dataa)
                 });
                 setData(rows);
@@ -403,6 +412,10 @@ const Sales = () => {
             inputTo.placeholder = 'Date To';
         }
     }, []);
+
+    const handlePrintUrl = (printUrl) => {
+        window.open(printUrl)
+    }
 
     return (
         <Box className='smilingSavedAddressMain salesApiSection' sx={{ padding: "20px", }}>
@@ -521,19 +534,13 @@ const Sales = () => {
                                             // selected={isItemSelected}
                                             sx={{ cursor: 'pointer' }}
                                         >
-
-                                            <TableCell
-                                                component="td"
-                                                id={labelId}
-                                                scope="row"
-                                                padding="none"
-                                                align="center"
-                                            >
-                                                {index+1}
-                                            </TableCell>
+                                            <TableCell component="td" id={labelId} scope="row" padding="none" align="center" > {index+1} </TableCell>
                                             <TableCell align="center">{row.Date}</TableCell>
                                             <TableCell align="center">{row.StockDocumentNo}</TableCell>
-                                            <TableCell align="right">{row.Amount}</TableCell>
+                                            <TableCell align="right">{formatAmount(row?.Amount)}</TableCell>
+                                            <TableCell align="center"> <div onClick={() => handlePrintUrl(row?.PrintUrl)}>
+                                                            <PrintIcon   />
+                                                        </div></TableCell>
                                             {/* <TableCell align="right">{row.protein}</TableCell> */}
                                         </TableRow>
                                     );
