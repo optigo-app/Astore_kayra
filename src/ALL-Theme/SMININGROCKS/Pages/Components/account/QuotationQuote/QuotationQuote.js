@@ -224,11 +224,13 @@ const QuotationQuote = () => {
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
+        scrollToTop();
     };
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
+        scrollToTop();
     };
 
     const emptyRows =
@@ -427,7 +429,13 @@ const QuotationQuote = () => {
     const handlePrintUrl = (printUrl) => {
         window.open(printUrl)
     }
- 
+    const scrollToTop = () => {
+        // Find the table container element and set its scrollTop property to 0
+        const tableContainer = document.querySelector('.quotationJobSec');
+        if (tableContainer) {
+          tableContainer.scrollTop = 0;
+        }
+      };
 
     return (
         <Box className='smilingSavedAddressMain salesApiSection' sx={{ padding: "20px", }}>
@@ -534,7 +542,7 @@ const QuotationQuote = () => {
             </Box>
             {isLoading ?
                 <Box sx={{ display: "flex", justifyContent: "center", paddingTop: "10px" }}><CircularProgress className='loadingBarManage' /></Box> : <Paper sx={{ width: '100%', mb: 2 }} className="salesApiTable">
-                    <TableContainer>
+                    <TableContainer className="quotationJobSec">
                         <Table
                             sx={{ minWidth: 750, border: "1px solid rgba(224, 224, 224, 1)", }}
                             aria-labelledby="tableTitle"
