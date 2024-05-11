@@ -226,12 +226,14 @@ const QuotationJob = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     setAllChecked(false);
+    scrollToTop();
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
     setAllChecked(false);
+    scrollToTop();
   };
 
   const handleSearch = (eve, searchValue, fromDatess, todatess, metalPurities, MetalColors, categories, statuss, orderPromDate) => {
@@ -406,6 +408,7 @@ const QuotationJob = () => {
     setFilterData(data);
     setSelectedStatus([]);
     setAllChecked(false);
+    scrollToTop();
     // setOrderBy('');
     // setOrder('asc')
   }
@@ -428,7 +431,7 @@ const QuotationJob = () => {
   // }
 
   const handleRequestSort = (property) => {
-
+    console.log(property);
     let isAsc = ((orderBy === property) && (order === 'asc'));
     if(isAsc){
       setOrder('desc');
@@ -493,24 +496,40 @@ const QuotationJob = () => {
     Dec: 11
   };
   
+  // function parseCustomDate(dateString) {
+  //   const parts = dateString?.split(' ');
+  //   if (parts?.length !== 3) {
+  //     throw new Error('Invalid date format');
+  //   }
+  //   const day = parseInt(parts[0]);
+  //   const month = months[parts[1]];
+  //   const year = parseInt(parts[2]);
+  //   if (isNaN(day) || isNaN(month) || isNaN(year)) {
+  //     throw new Error('Invalid date format');
+  //   }
+  //   return new Date(year, month, day);
+  // }
   function parseCustomDate(dateString) {
+    const months = {
+      Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+      Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+    };
     const parts = dateString?.split(' ');
-    if (parts.length !== 3) {
+    if (parts?.length !== 3) {
       throw new Error('Invalid date format');
     }
     const day = parseInt(parts[0]);
-    const month = months[parts[1]];
+    const month = months[parts[1].substring(0, 3)]; // Extract the first three characters of the month name
     const year = parseInt(parts[2]);
     if (isNaN(day) || isNaN(month) || isNaN(year)) {
       throw new Error('Invalid date format');
     }
     return new Date(year, month, day);
   }
-  
   function descendingComparator(a, b, orderBy) {
     if (!orderBy) return 0; // Add null check for orderBy
     
-    if (orderBy === 'Date') {
+    if (orderBy === 'Date' || orderBy === 'PDate') {
         try {
             const dateA = parseCustomDate(a[orderBy]);
             const dateB = parseCustomDate(b[orderBy]);
@@ -904,6 +923,15 @@ const handleCheckboxChange = (event, rowIndex) => {
   setFilterData(newData);
 };
 
+
+const scrollToTop = () => {
+  // Find the table container element and set its scrollTop property to 0
+  const tableContainer = document.querySelector('.quotationJobSec');
+  if (tableContainer) {
+    tableContainer.scrollTop = 0;
+  }
+};
+
   return (
     <Box className='smilingSavedAddressMain quotationFiltersText' sx={{ padding: "20px", }}>
       <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -918,7 +946,7 @@ const handleCheckboxChange = (event, rowIndex) => {
             sx={{ display: "flex", alignItems: "center", flexDirection: "unset" }}
           >
             <FormControlLabel value="order" className='orderFrom QuotationJobAllBtnSecDate' control={<Radio />} label="Order Date" sx={{ padding: "0 20px 35px 0", marginRight: "0" }} />
-            <FormControlLabel value="prom" className='orderFrom QuotationJobAllBtnSecDate' control={<Radio />} label="From. Date" sx={{ padding: "0 10px 35px 0", marginRight: "0" }} />
+            <FormControlLabel value="prom" className='orderFrom QuotationJobAllBtnSecDate' control={<Radio />} label="Promise Date" sx={{ padding: "0 10px 35px 0", marginRight: "0" }} />
           </RadioGroup>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -992,7 +1020,7 @@ const handleCheckboxChange = (event, rowIndex) => {
           <Button variant='contained' className='muiSmilingRocksBtn' sx={{ padding: "7px 10px", minWidth: "max-content", background: "#7d7f85" }} onClick={(eve) => handleSearch(eve, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm)}><SearchIcon sx={{ color: "#fff !important" }} /></Button>
         </Box>
         <Box sx={{ position: "relative", padding: "0 15px 35px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
-          <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 10, top: "-10px", }}>Status</label>
+        <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-16px", }}>Status</label>
           {/* <FormControl sx={{ m: 1, width: 300 }}>
         <InputLabel id="demo-multiple-name-label">ALL</InputLabel>
         <Select
@@ -1033,9 +1061,10 @@ const handleCheckboxChange = (event, rowIndex) => {
                 onChange={handleStatus} // Assuming handleStatus function receives selected values
                 MenuProps={MenuProps}
                 input={<OutlinedInput  />}
-                
+                style={{minHeight:'1.8375em'}}
                 className='statusSelect'
                 size='small'
+                label='ALL'
                 renderValue={(selected) => {
                   if (selected.length === 0) {
                     return <em style={{color:'black'}}>Placeholder</em>;
