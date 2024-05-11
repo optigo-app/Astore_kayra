@@ -53,7 +53,10 @@ const descendingComparator = (a, b, orderBy) => {
         return 0;
     } else if (orderBy === 'SrNo' || orderBy === 'Amount') {
         return a[orderBy] - b[orderBy];
-    } else {
+    } else if ((orderBy === 'SKUNo') ) {
+        // Handle sorting for SKU# column
+        return customComparator_Col(a[orderBy], b[orderBy]);
+    }  else {
         const valueA = typeof a[orderBy] === 'string' ? a[orderBy].toLowerCase() : a[orderBy];
         const valueB = typeof b[orderBy] === 'string' ? b[orderBy].toLowerCase() : b[orderBy];
 
@@ -66,7 +69,17 @@ const descendingComparator = (a, b, orderBy) => {
         return 0;
     }
 }
-
+const customComparator_Col = (a, b) => {
+    const regex = /([^\d]+)(\d+)/;
+    const [, wordA, numA] = a?.match(regex);
+    const [, wordB, numB] = b?.match(regex);
+    
+    if (wordA !== wordB) {
+        return wordA?.localeCompare(wordB);
+    }
+    
+    return parseInt(numB, 10) - parseInt(numA, 10);
+  };
 
 const getComparator = (order, orderBy) => {
     return order === 'desc'

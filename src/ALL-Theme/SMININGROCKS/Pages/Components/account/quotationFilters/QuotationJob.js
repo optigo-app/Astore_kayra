@@ -556,7 +556,10 @@ const QuotationJob = () => {
           return 1;
       }
       return 0;
-    } else {
+    }else if ((orderBy === 'PO') || (orderBy === 'PO') || (orderBy === 'SKUNO') || (orderBy === 'DesignNo')) {
+      // Handle sorting for SKU# column
+      return customComparator_Col(a[orderBy], b[orderBy]);
+  }  else {
         const valueA = a[orderBy]?.toString()?.toLowerCase() || '';
         const valueB = b[orderBy]?.toString()?.toLowerCase() || '';
 
@@ -569,7 +572,17 @@ const QuotationJob = () => {
         return 0;
     }
 }
-
+const customComparator_Col = (a, b) => {
+  const regex = /([^\d]+)(\d+)/;
+  const [, wordA, numA] = a?.match(regex);
+  const [, wordB, numB] = b?.match(regex);
+  
+  if (wordA !== wordB) {
+      return wordA?.localeCompare(wordB);
+  }
+  
+  return parseInt(numB, 10) - parseInt(numA, 10);
+};
   const fetchData = async () => {
     try {
       setIsLoading(true);
