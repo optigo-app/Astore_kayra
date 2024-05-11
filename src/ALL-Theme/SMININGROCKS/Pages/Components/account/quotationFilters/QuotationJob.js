@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
-import { Button, Checkbox, Chip, CircularProgress, FormControlLabel, InputLabel, ListItemText, MenuItem, OutlinedInput, Radio, RadioGroup, Select, TextField } from '@mui/material';
+import { Button, Checkbox, Chip, CircularProgress, FormControl, FormControlLabel, InputLabel, ListItemText, MenuItem, OutlinedInput, Radio, RadioGroup, Select, TextField } from '@mui/material';
 import "./QuotationJob.css";
+import { formatAmount } from '../../../../Utils/globalFunctions/GlobalFunction';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
@@ -36,6 +37,7 @@ const CustomSortIcon = ({ order }) => {
 };
 
 const QuotationJob = () => {
+  const [showFilter, setShowFilter] = useState(false);
 
   const [allChecked, setAllChecked] = useState(false);
   const [orderProm, setOrderProm] = useState('order');
@@ -46,7 +48,7 @@ const QuotationJob = () => {
   const [filterData2, setFilterData2] = useState([]);
   const [searchVal, setSearchVal] = useState("");
   const [orderBy, setOrderBy] = useState('');
-  const [order, setOrder] = useState('asc');
+  const [order, setOrder] = useState('');
   const [statusList, setStatusList] = useState([]);
   const [categoryList, setCategoryList] = useState([
     // { id: 0, label: "All", value: "All" },
@@ -403,6 +405,9 @@ const QuotationJob = () => {
     handleSearch(eve, "", null, null, metalPurityList[0]?.value, metalColorList[0]?.value, categoryList[0]?.value, statusList[0]?.value, "order");
     setFilterData(data);
     setSelectedStatus([]);
+    setAllChecked(false);
+    // setOrderBy('');
+    // setOrder('asc')
   }
 
   const resetAllFilt = () => {
@@ -423,9 +428,29 @@ const QuotationJob = () => {
   // }
 
   const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+
+    let isAsc = ((orderBy === property) && (order === 'asc'));
+    if(isAsc){
+      setOrder('desc');
+    }else{
+      setOrder('asc');
+    }
+    // setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+    const sortedData = stableSort(data, getComparator(order, property));
+    setData(sortedData); // Update the data array with sorted data
+  
+    // Update the filterData array with the sorted data
+    const sortedFilterData = stableSort(filterData, getComparator(order, property));
+    // setPage(0);
+    setFilterData(sortedFilterData);
+
+    //  let arr = data?.map((e) => {
+    //   e.isJobSelected = false;
+    //   return e;
+    //  })
+    //  setFilterData(arr);
+     
   };
 
   function stableSort(array, comparator) {
@@ -439,7 +464,6 @@ const QuotationJob = () => {
   }
 
   function getComparator(order, orderBy) {
-
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy);
@@ -502,6 +526,17 @@ const QuotationJob = () => {
             console.error('Error parsing date:', error.message);
             return 0;
         }
+    } else if(orderBy === 'FinalAmount'){
+      const valueA = parseFloat(a[orderBy]) || 0;
+      const valueB = parseFloat(b[orderBy]) || 0;
+
+      if (valueB < valueA) {
+          return -1;
+      }
+      if (valueB > valueA) {
+          return 1;
+      }
+      return 0;
     } else {
         const valueA = a[orderBy]?.toString()?.toLowerCase() || '';
         const valueB = b[orderBy]?.toString()?.toLowerCase() || '';
@@ -537,7 +572,7 @@ const QuotationJob = () => {
         p: encodedCombinedValue
       };
       const response = await CommonAPI(body);
-      
+      // setCheckboxState(new Array(response?.Data?.rd?.length)?.fill(false));
       setPrintUrl(response?.Data?.rd1[0]?.PrintUrl);
       if (response.Data?.rd) {
 
@@ -546,6 +581,7 @@ const QuotationJob = () => {
         let allCategory = [];
         let allMetalColor = [];
         let allMetalPurity = [];
+        
         response?.Data?.rd?.forEach((e, i) => {
           let obj = { ...e };
           obj["checkbox"] = <Checkbox />;
@@ -573,7 +609,8 @@ const QuotationJob = () => {
         allCategory?.unshift({ id: allCategory?.length, label: "ALL", value: "ALL" });
         allMetalColor?.unshift({ id: allMetalColor?.length, label: "ALL", value: "ALL" });
         allMetalPurity?.unshift({ id: allMetalPurity?.length, label: "ALL", value: "ALL" });
-        setStatusList(allStatus);
+         let allStatus2 = allStatus?.filter((e) => (e?.label !== '' && e?.value !== ''))
+        setStatusList(allStatus2);
         setCategoryList(allCategory);
         setmetalColorList(allMetalColor);
         setMetalPurityList(allMetalPurity);
@@ -605,26 +642,46 @@ const QuotationJob = () => {
     }
   }, []);
 
-  const handlePrintJobs = async(filterdatas) => {
-      let onlyTrueJobjs = filterdatas?.filter((e) => e?.isJobSelected === true);
-      let jobStringArr = onlyTrueJobjs?.map((e) => e?.JobNo)?.toString();
 
-      const storedData = localStorage.getItem('loginUserDetail');
-      const data = JSON.parse(storedData);
-      const customerid = data?.id;
+  const handlePrintJobs = async(filterdatas, mainData) => {
+      let onlyTrueJobjs = filterdatas?.filter((e) => e?.isJobSelected === true);
+      if((filterdatas?.length === mainData?.length) && (onlyTrueJobjs?.length === 0)){
+        onlyTrueJobjs = [...mainData];
+      }
+      if(filterdatas?.length !== 0){
+        let onlyTrueJobjs2 = filterdatas?.filter((e) => e?.isJobSelected === true);
+        if(onlyTrueJobjs2?.length === 0){
+          onlyTrueJobjs = filterdatas; 
+        }else{
+          onlyTrueJobjs = onlyTrueJobjs2;
+        }
+      }
+
+      let allAreChecked = [];
+      onlyTrueJobjs?.forEach((e) => {
+        let obj = {...e};
+        obj.isJobSelected = true;
+        allAreChecked.push(obj);
+      })
+      
+        let jobStringArr = allAreChecked?.map((e) => e?.JobNo)?.toString();
+        
+        const storedData = localStorage.getItem('loginUserDetail');
+        const data = JSON.parse(storedData);
+        const customerid = data?.id;
 
       let fromdate =  moment(fromDate)
       let enddate =  moment(toDate)
       let daytextf = fromdate?._i?.$d;
       let daytextt = enddate?._i?.$d;
-
+      
       const startDate = new Date(daytextf);
       const endDate = new Date(daytextt);
-
+      
       const formattedStartDate = moment(startDate).format('DD MMM YYYY');
       const formattedEndDate = moment(endDate).format('DD MMM YYYY');
-
-
+      
+      
       const Farr = [
         {
           Customerid:`${customerid}`,
@@ -642,32 +699,98 @@ const QuotationJob = () => {
           // orderProm:`${orderProm}`,
         }
       ]
-      console.log(Farr);
+
       const jsonConvert = btoa((JSON.stringify(Farr)));
-      // const decodedData = (atob(jsonConvert));
+      
       const printMainUrl = `${PrintUrl}&Farr=${jsonConvert}`;
-      window.open(printMainUrl)
+      
+      const form = document.createElement('form');
+      form.setAttribute('method', 'post');
+      form.setAttribute('action', `${PrintUrl}`);
+      form.setAttribute('target', '_blank'); // Opens in a new tab
+    
+      const dataInput = document.createElement('input');
+      dataInput.setAttribute('type', 'hidden');
+      dataInput.setAttribute('name', 'Farr');
+      dataInput.setAttribute('value', jsonConvert);
+      form.appendChild(dataInput);
+    
+      document.body.appendChild(form);
+      
+      // Debugging - log the form HTML to see if everything looks correct
+      // console.log(form.outerHTML);
+    
+      // Submit the form
+      form.submit();
 
   }
-  const handleCheckboxChange = (event, rowIndex) => {
-    // const newData = [...filterData]; // Make a copy of the data array
-    // newData[rowIndex].isJobSelected = event.target.checked; // Update isJobSelected property
-    // setFilterData(newData); // Update state with the modified data
-
-     const newData = filterData.map((row, index) => {
-    if (index === page * rowsPerPage + rowIndex) {
-      return {
-        ...row,
-        isJobSelected: event.target.checked,
-      };
-    }
-    return row;
-  });
-
-  setFilterData(newData);
 
 
-  };
+  
+  // // working code 11-05-2024
+  // const handleCheckboxChange = (event, rowIndex, row) => {
+  //   console.log(event?.target?.checked);
+  //   // const newData = [...filterData]; // Make a copy of the data array
+  //   // newData[rowIndex].isJobSelected = event.target.checked; // Update isJobSelected property
+  //   // setFilterData(newData); // Update state with the modified data
+  //   console.log(event, rowIndex, row);
+  //    const newData = filterData.map((row, index) => {
+  //   if (index === (page * rowsPerPage + rowIndex)) {
+  //     let obj = {...row};
+  //     obj.isJobSelected = event?.target?.checked;
+  //     row = obj;
+  //     return row;
+  //     // return obj
+  //     // return {
+  //     //   ...row,
+  //     //   isJobSelected: (event.target.checked ? false : true),
+  //     // };
+  //   }else{
+  //     return row;
+  //   }
+  // });
+
+  // setFilterData(newData);
+
+
+  // };
+  // // working code 11-05-2024
+  // const handleMasterCheckboxChange = (event) => {
+  //   const isChecked = event.target.checked;
+  
+  //   // const newData = filterData.map((row, index) => ({
+  //   //   ...row,
+  //   //   isJobSelected: (isChecked && index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) || row.isJobSelected,
+  //   // }));
+  //   // const newData = filterData.map((row, index) => ({
+  //   //   ...row,
+  //   //   isJobSelected: (isChecked && index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) || row.isJobSelected,
+  //   // }));
+  
+  //   // setFilterData(newData);
+  //   // setAllChecked(isChecked);
+  //   // const isChecked = event.target.checked;
+  //   // setAllChecked(isChecked);
+  //   // const newData = filterData.map((row) => ({
+  //   //   ...row,
+  //   //   isJobSelected: isChecked,
+  //   // }));
+  //   // setFilterData(isChecked ? [...newData] : []);
+    
+  //   setAllChecked(isChecked);
+  
+  //   const newData = filterData.map((row, index) => {
+  //     if (index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) {
+  //       return {
+  //         ...row,
+  //         isJobSelected: isChecked,
+  //       };
+  //     }
+  //     return row;
+  //   });
+  
+  //   setFilterData(newData);
+  // };
 
   // const handleMasterCheckboxChange = (event) => {
   //   const isChecked = event.target.checked;
@@ -692,21 +815,26 @@ const QuotationJob = () => {
     
   //   // setFilterData(newData);
   // };
-  const handleMasterCheckboxChange = (event) => {
-    const isChecked = event.target.checked;
+
+
+
   
-    // const newData = filterData.map((row, index) => ({
-    //   ...row,
-    //   isJobSelected: (isChecked && index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) || row.isJobSelected,
-    // }));
-    const newData = filterData.map((row, index) => ({
-      ...row,
-      isJobSelected: (isChecked && index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) || row.isJobSelected,
-    }));
+
+
+
+  // const handleCheckboxChange = (event, index) => {
+  //   const newState = [...checkboxState];
+  //   newState[index] = event.target.checked;
+  //   setCheckboxState(newState);
+  // };
   
-    setFilterData(newData);
-    setAllChecked(isChecked);
-  };
+
+  // const handleMasterCheckboxChange = (event) => {
+  //   const isChecked = event.target.checked;
+  //   setAllChecked(isChecked);
+  //   // Update checkbox state for current page
+  //   setCheckboxState((prev) => prev.map(() => isChecked));
+  // };
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -717,7 +845,65 @@ const QuotationJob = () => {
         width: 250,
       },
     },
+    
   };
+
+ // Inside handleMasterCheckboxChange function
+// Inside handleMasterCheckboxChange function
+const handleMasterCheckboxChange = (event) => {
+
+  // setOrder(isAsc ? 'desc' : 'asc');
+  
+  const sortedData = stableSort(data, getComparator(order, orderBy));
+  setData(sortedData); // Update the data array with sorted data
+
+  // Update the filterData array with the sorted data
+  const sortedFilterData = stableSort(filterData, getComparator(order, orderBy));
+  
+  setFilterData(sortedFilterData);
+
+
+
+  const isChecked = event.target.checked;
+  setAllChecked(isChecked);
+
+  // Update the isJobSelected property for all rows in the current page of sortedData array
+  const newData = sortedFilterData?.map((row, index) => {
+    if (index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) {
+      return {
+        ...row,
+        isJobSelected: isChecked,
+      };
+    }
+    return row;
+  });
+  setFilterData(newData);
+};
+
+// Inside handleCheckboxChange function
+const handleCheckboxChange = (event, rowIndex) => {
+
+  const sortedData = stableSort(data, getComparator(order, orderBy));
+  setData(sortedData); // Update the data array with sorted data
+
+  // Update the filterData array with the sorted data
+  const sortedFilterData = stableSort(filterData, getComparator(order, orderBy));
+  
+  setFilterData(sortedFilterData);
+
+  const newData = sortedFilterData?.map((row, index) => {
+    if (index === page * rowsPerPage + rowIndex) {
+      return {
+        ...row,
+        isJobSelected: event.target.checked,
+      };
+    }
+    return row;
+  });
+
+  setFilterData(newData);
+};
+
   return (
     <Box className='smilingSavedAddressMain quotationFiltersText' sx={{ padding: "20px", }}>
       <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -806,7 +992,39 @@ const QuotationJob = () => {
           <Button variant='contained' className='muiSmilingRocksBtn' sx={{ padding: "7px 10px", minWidth: "max-content", background: "#7d7f85" }} onClick={(eve) => handleSearch(eve, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm)}><SearchIcon sx={{ color: "#fff !important" }} /></Button>
         </Box>
         <Box sx={{ position: "relative", padding: "0 15px 35px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
-          <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-16px", }}>Status</label>
+          <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 10, top: "-10px", }}>Status</label>
+          {/* <FormControl sx={{ m: 1, width: 300 }}>
+        <InputLabel id="demo-multiple-name-label">ALL</InputLabel>
+        <Select
+          labelId="demo-multiple-name-label"
+          id="demo-multiple-name"
+          multiple
+          value={selectedStatus} // Assuming selectedStatus is an array of selected values
+          onChange={handleStatus} // Assuming handleStatus function receives selected values
+          input={<OutlinedInput  />}
+          MenuProps={MenuProps}
+          // label='ALL'
+          className='statusSelect'
+          size='small'
+          style={{width:'50%'}}
+          renderValue={(selected) => (
+            <div>
+              {selected?.map((value) => (
+                <div></div>
+                // <Chip key={value} label={value} />
+              ))}
+            </div>
+          )}
+        >
+          {statusList?.map((status) => (
+                <MenuItem key={status.id} value={status.value}>
+                  <Checkbox checked={selectedStatus?.indexOf(status.value) > -1} />
+                  <ListItemText primary={status.label} />
+                </MenuItem>
+              ))}
+        </Select>
+          </FormControl> */}
+          
               <Select
                 labelId="demo-multiple-checkbox-label"
                 id="demo-multiple-checkbox"
@@ -814,19 +1032,32 @@ const QuotationJob = () => {
                 value={selectedStatus} // Assuming selectedStatus is an array of selected values
                 onChange={handleStatus} // Assuming handleStatus function receives selected values
                 MenuProps={MenuProps}
-                // input={<OutlinedInput label="Status" />}
+                input={<OutlinedInput  />}
+                
                 className='statusSelect'
                 size='small'
-                renderValue={(selected) => (
-                  <div>
-                    {selected?.map((value) => (
-                      <div></div>
-                      // <Chip key={value} label={value} />
-                    ))}
-                  </div>
-                )}
+                renderValue={(selected) => {
+                  if (selected.length === 0) {
+                    return <em style={{color:'black'}}>Placeholder</em>;
+                  }
+      
+                  return '';
+                }}
+                inputProps={{
+                  placeholder: 'Placeholder', // Set placeholder directly on the inputProps
+              }}
+                // renderValue={(selected) => (
+                //   <div>
+                    
+                //     { selected?.length === 0 ? <div>Placeholder</div> : selected?.map((value) => (
+                //       <div></div>
+                //       // <Chip key={value} label={value} />
+                //     ))}
+                //   </div>
+                // )}
               
               >
+                
               {statusList?.map((status) => (
                 <MenuItem key={status.id} value={status.value}>
                   <Checkbox checked={selectedStatus?.indexOf(status.value) > -1} />
@@ -912,7 +1143,7 @@ const QuotationJob = () => {
             onClick={eve => handleSearch(eve, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm)}><SearchIcon /></Button>
         </Box>
         <Box sx={{ padding: "0 0px 40px 0", }} className="QuotationJobAllBtnSec">
-          <Button variant='contained' className='muiSmilingRocksBtn' sx={{ padding: "7px 10px", minWidth: "max-content", background: "#7d7f85" }} onClick={(eve) => handlePrintJobs(filterData)}><PrintIcon sx={{ color: "#fff !important" }} /></Button>
+          <Button variant='contained' className='muiSmilingRocksBtn' sx={{ padding: "7px 10px", minWidth: "max-content", background: "#7d7f85" }} onClick={(eve) => handlePrintJobs(filterData, data)}><PrintIcon sx={{ color: "#fff !important" }} /></Button>
         </Box>
       </Box>
 
@@ -938,7 +1169,7 @@ const QuotationJob = () => {
                       >
                         {column.label}
                         {orderBy === column.id ? (
-                          <span style={{ display: 'flex', alignItems: 'center' }}>
+                          <span style={{ display: 'flex', alignItems: 'right' }}>
                             {orderBy === column?.id && (<CustomSortIcon order={order} />)}
                           </span>
                         ) : null}
@@ -961,14 +1192,18 @@ const QuotationJob = () => {
                               <TableCell key={column?.id} align={column?.align}>
                               {column.id === 'Sr#' ? serialNumber : 
                                 column?.id === 'checkbox' ? 
+                                // <Checkbox
+                                //     checked={checkboxState[page * rowsPerPage + rowIndex]}
+                                //     onChange={(event) => handleCheckboxChange(event, page * rowsPerPage + rowIndex)}
+                                //   />
                                   <Checkbox 
                                     checked={row?.isJobSelected} 
-                                    onChange={(event) => handleCheckboxChange(event, rowIndex)} 
+                                    onChange={(event) => handleCheckboxChange(event, rowIndex, row)} 
                                   /> 
                                   : 
                                   column?.format && typeof value === 'number'
                                     ? column.format(value)
-                                    : value}
+                                    : column?.id === 'FinalAmount' ? formatAmount(value) : value}
                             </TableCell>
                               // <TableCell key={column?.id} align={column?.align}>
                               //   {column.id === 'Sr#' ? serialNumber : column?.format && typeof value === 'number'

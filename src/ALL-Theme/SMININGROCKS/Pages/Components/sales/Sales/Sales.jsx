@@ -76,8 +76,9 @@ const descendingComparator = (a, b, orderBy) => {
         }
         return 0;
     } else if (orderBy === 'SrNo' || orderBy === 'Amount') {
-        return a[orderBy] - b[orderBy];
-    } else {
+        // return a[orderBy] - b[orderBy];
+        return b[orderBy] - a[orderBy];
+    }  else {
         const valueA = typeof a[orderBy] === 'string' ? a[orderBy].toLowerCase() : a[orderBy];
         const valueB = typeof b[orderBy] === 'string' ? b[orderBy].toLowerCase() : b[orderBy];
 
@@ -209,8 +210,13 @@ const Sales = () => {
     const toDateRef = useRef(null);
 
     const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
+        let isAsc = ((orderBy === property) && (order === 'asc'));
+        if(isAsc){
+          setOrder('desc');
+        }else{
+          setOrder('asc');
+        }
+        // setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 

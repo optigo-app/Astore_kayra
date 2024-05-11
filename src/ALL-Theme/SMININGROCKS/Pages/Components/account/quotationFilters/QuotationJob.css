@@ -89,11 +89,12 @@
 .quotaionFiltertable th>span {
     position: absolute;
     top: 50%;
-    right: 0;
+    right: -6%;
     transform: translate(-50%, -50%);
     margin: 0px;
     /* left: 50%; */
-    left: 53%;
+    /* left: 53%; */
+    /* left: 33%; */
 }
 
 .quotaionFiltertable {
