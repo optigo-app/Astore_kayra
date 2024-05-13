@@ -381,6 +381,7 @@ const QuotationQuote = () => {
             }
 
         });
+        
         if (count === 0) {
             setFilterData(filteredData);
         }

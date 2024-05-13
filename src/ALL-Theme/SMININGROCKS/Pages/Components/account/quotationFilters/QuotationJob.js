@@ -263,42 +263,42 @@ const QuotationJob = () => {
         metalPurity: false,
       }
       if (searchValue !== "") {
-        // if (e?.["Sr#"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["Date"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["SKUNO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["PO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["JobNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["DesignNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["Category"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["metal_color"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["metal_purity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["PDate"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["FinalAmount"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["ProgressStatusName"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["Quantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-        //   e?.["SuppliedQuantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()))
-        //    {
-        //   flags.search = true;
-        // }
-        const searchLower = searchValue?.trim()?.toLowerCase(); // Convert search value to lowercase
-        if (
-            (e?.["Sr#"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["Date"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["SKUNO"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["PO"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["JobNo"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["DesignNo"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["metal_color"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["metal_purity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["PDate"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["FinalAmount"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["ProgressStatusName"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["Quantity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["SuppliedQuantity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
-            (e?.["Category"]?.toString()?.toLowerCase().startsWith(searchLower)) 
-          ) {
-            flags.search = true;
+        if (e?.["Sr#"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["Date"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["SKUNO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["PO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["JobNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["DesignNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["Category"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["metal_color"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["metal_purity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["PDate"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["FinalAmount"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["ProgressStatusName"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["Quantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+          e?.["SuppliedQuantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()))
+           {
+          flags.search = true;
         }
+        // const searchLower = searchValue?.trim()?.toLowerCase(); // Convert search value to lowercase
+        // if (
+        //     (e?.["Sr#"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["Date"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["SKUNO"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["PO"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["JobNo"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["DesignNo"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["metal_color"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["metal_purity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["PDate"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["FinalAmount"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["ProgressStatusName"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["Quantity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["SuppliedQuantity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["Category"]?.toString()?.toLowerCase().startsWith(searchLower)) 
+        //   ) {
+        //     flags.search = true;
+        // }
       } else {
         flags.search = true;
       }
