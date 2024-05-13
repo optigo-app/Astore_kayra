@@ -38,6 +38,7 @@ const CustomSortIcon = ({ order }) => {
 
 const QuotationJob = () => {
   const [showFilter, setShowFilter] = useState(false);
+  const [printJobError, setPrintJobError] = useState('');
 
   const [allChecked, setAllChecked] = useState(false);
   const [orderProm, setOrderProm] = useState('order');
@@ -182,23 +183,33 @@ const QuotationJob = () => {
   const [PrintUrl, setPrintUrl] = useState('');
 
   const handleOrderProms = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setOrderProm(event.target.value);
   };
   const handleStatus = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     // setStatus(event.target.value);
     setSelectedStatus(event.target.value);
     // handleSearch(event, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm);
     handleSearch(event, searchVal, fromDate, toDate, metalPurity, MetalColor, category, event.target.value, orderProm);
   };
   const handleCategory = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setCategory(event.target.value);
     handleSearch(event, searchVal, fromDate, toDate, metalPurity, MetalColor, event.target.value, statuse, orderProm);
   };
   const handleMetalColor = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setMetalColor(event.target.value);
     handleSearch(event, searchVal, fromDate, toDate, metalPurity, event.target.value, category, statuse, orderProm);
   };
   const handleMetalPurity = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setMetalPurity(event.target.value);
     handleSearch(event, searchVal, fromDate, toDate, event.target.value, MetalColor, category, statuse, orderProm);
   };
@@ -226,12 +237,14 @@ const QuotationJob = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
     setAllChecked(false);
+    scrollToTop();
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
     setAllChecked(false);
+    scrollToTop();
   };
 
   const handleSearch = (eve, searchValue, fromDatess, todatess, metalPurities, MetalColors, categories, statuss, orderPromDate) => {
@@ -250,21 +263,41 @@ const QuotationJob = () => {
         metalPurity: false,
       }
       if (searchValue !== "") {
-        if (e?.["Sr#"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["Date"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["SKUNO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["PO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["JobNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["DesignNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["Category"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["metal_color"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["metal_purity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["PDate"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["FinalAmount"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["ProgressStatusName"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["Quantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["SuppliedQuantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase())) {
-          flags.search = true;
+        // if (e?.["Sr#"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["Date"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["SKUNO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["PO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["JobNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["DesignNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["Category"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["metal_color"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["metal_purity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["PDate"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["FinalAmount"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["ProgressStatusName"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["Quantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["SuppliedQuantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()))
+        //    {
+        //   flags.search = true;
+        // }
+        const searchLower = searchValue?.trim()?.toLowerCase(); // Convert search value to lowercase
+        if (
+            (e?.["Sr#"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["Date"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["SKUNO"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["PO"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["JobNo"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["DesignNo"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["metal_color"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["metal_purity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["PDate"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["FinalAmount"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["ProgressStatusName"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["Quantity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["SuppliedQuantity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["Category"]?.toString()?.toLowerCase().startsWith(searchLower)) 
+          ) {
+            flags.search = true;
         }
       } else {
         flags.search = true;
@@ -341,13 +374,13 @@ const QuotationJob = () => {
 
 
 
-      if (e?.MetalType?.toString()?.toLowerCase()?.includes(metalPurities?.toLowerCase()) || metalPurities?.toLowerCase() === "all") {
+      if (e?.MetalType?.toString()?.toLowerCase()?.startsWith(metalPurities?.toLowerCase()) || metalPurities?.toLowerCase() === "all") {
         flags.metalPurity = true;
       }
-      if (e?.MetalColor?.toString()?.toLowerCase()?.includes(MetalColors?.toLowerCase()) || MetalColors?.toLowerCase() === "all") {
+      if (e?.MetalColor?.toString()?.toLowerCase()?.startsWith(MetalColors?.toLowerCase()) || MetalColors?.toLowerCase() === "all") {
         flags.MetalColor = true;
       }
-      if (e?.Category?.toString()?.toLowerCase()?.includes(categories?.toLowerCase()) || categories?.toLowerCase() === "all") {
+      if (e?.Category?.toString()?.toLowerCase()?.startsWith(categories?.toLowerCase()) || categories?.toLowerCase() === "all") {
         flags.category = true;
       }
 
@@ -394,6 +427,7 @@ const QuotationJob = () => {
   }
 
   const resetAllFilters = (eve) => {
+    setSelectedStatus([]);
     setOrderProm("order");
     setFromDate(null);
     setToDate(null);
@@ -404,8 +438,10 @@ const QuotationJob = () => {
     setSearchVal("");
     handleSearch(eve, "", null, null, metalPurityList[0]?.value, metalColorList[0]?.value, categoryList[0]?.value, statusList[0]?.value, "order");
     setFilterData(data);
-    setSelectedStatus([]);
     setAllChecked(false);
+    scrollToTop();
+    setPage(0);
+    setRowsPerPage(10);
     // setOrderBy('');
     // setOrder('asc')
   }
@@ -428,7 +464,6 @@ const QuotationJob = () => {
   // }
 
   const handleRequestSort = (property) => {
-
     let isAsc = ((orderBy === property) && (order === 'asc'));
     if(isAsc){
       setOrder('desc');
@@ -493,24 +528,40 @@ const QuotationJob = () => {
     Dec: 11
   };
   
+  // function parseCustomDate(dateString) {
+  //   const parts = dateString?.split(' ');
+  //   if (parts?.length !== 3) {
+  //     throw new Error('Invalid date format');
+  //   }
+  //   const day = parseInt(parts[0]);
+  //   const month = months[parts[1]];
+  //   const year = parseInt(parts[2]);
+  //   if (isNaN(day) || isNaN(month) || isNaN(year)) {
+  //     throw new Error('Invalid date format');
+  //   }
+  //   return new Date(year, month, day);
+  // }
   function parseCustomDate(dateString) {
+    const months = {
+      Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+      Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+    };
     const parts = dateString?.split(' ');
-    if (parts.length !== 3) {
+    if (parts?.length !== 3) {
       throw new Error('Invalid date format');
     }
     const day = parseInt(parts[0]);
-    const month = months[parts[1]];
+    const month = months[parts[1].substring(0, 3)]; // Extract the first three characters of the month name
     const year = parseInt(parts[2]);
     if (isNaN(day) || isNaN(month) || isNaN(year)) {
       throw new Error('Invalid date format');
     }
     return new Date(year, month, day);
   }
-  
   function descendingComparator(a, b, orderBy) {
     if (!orderBy) return 0; // Add null check for orderBy
     
-    if (orderBy === 'Date') {
+    if (orderBy === 'Date' || orderBy === 'PDate') {
         try {
             const dateA = parseCustomDate(a[orderBy]);
             const dateB = parseCustomDate(b[orderBy]);
@@ -527,6 +578,7 @@ const QuotationJob = () => {
             return 0;
         }
     } else if(orderBy === 'FinalAmount'){
+      
       const valueA = parseFloat(a[orderBy]) || 0;
       const valueB = parseFloat(b[orderBy]) || 0;
 
@@ -536,8 +588,13 @@ const QuotationJob = () => {
       if (valueB > valueA) {
           return 1;
       }
+
       return 0;
-    } else {
+
+    }else if ((orderBy === 'PO') || (orderBy === 'PO') || (orderBy === 'SKUNO') || (orderBy === 'DesignNo')) {
+      // Handle sorting for SKU# column
+      return customComparator_Col(a[orderBy], b[orderBy]);
+  }  else {
         const valueA = a[orderBy]?.toString()?.toLowerCase() || '';
         const valueB = b[orderBy]?.toString()?.toLowerCase() || '';
 
@@ -550,7 +607,17 @@ const QuotationJob = () => {
         return 0;
     }
 }
-
+  const customComparator_Col = (a, b) => {
+  const regex = /([^\d]+)(\d+)/;
+  const [, wordA, numA] = a?.match(regex);
+  const [, wordB, numB] = b?.match(regex);
+  
+  if (wordA !== wordB) {
+      return wordA?.localeCompare(wordB);
+  }
+  
+  return parseInt(numB, 10) - parseInt(numA, 10);
+};
   const fetchData = async () => {
     try {
       setIsLoading(true);
@@ -645,88 +712,82 @@ const QuotationJob = () => {
 
   const handlePrintJobs = async(filterdatas, mainData) => {
       let onlyTrueJobjs = filterdatas?.filter((e) => e?.isJobSelected === true);
-      if((filterdatas?.length === mainData?.length) && (onlyTrueJobjs?.length === 0)){
-        onlyTrueJobjs = [...mainData];
-      }
-      if(filterdatas?.length !== 0){
-        let onlyTrueJobjs2 = filterdatas?.filter((e) => e?.isJobSelected === true);
-        if(onlyTrueJobjs2?.length === 0){
-          onlyTrueJobjs = filterdatas; 
-        }else{
-          onlyTrueJobjs = onlyTrueJobjs2;
-        }
-      }
+      // if(onlyTrueJobjs?.length > 0){
 
-      let allAreChecked = [];
-      onlyTrueJobjs?.forEach((e) => {
-        let obj = {...e};
-        obj.isJobSelected = true;
-        allAreChecked.push(obj);
-      })
-      
-        let jobStringArr = allAreChecked?.map((e) => e?.JobNo)?.toString();
+          let allAreChecked = [];
+          onlyTrueJobjs?.forEach((e) => {
+            let obj = {...e};
+              obj.isJobSelected = true;
+              allAreChecked.push(obj);
+          });
+
+
+          let jobStringArr = allAreChecked?.map((e) => e?.JobNo)?.toString();
         
-        const storedData = localStorage.getItem('loginUserDetail');
-        const data = JSON.parse(storedData);
-        const customerid = data?.id;
+            const storedData = localStorage.getItem('loginUserDetail');
+            const data = JSON.parse(storedData);
+            const customerid = data?.id;
+    
+          let fromdate =  moment(fromDate)
+          let enddate =  moment(toDate)
+          let daytextf = fromdate?._i?.$d;
+          let daytextt = enddate?._i?.$d;
+          
+          const startDate = new Date(daytextf);
+          const endDate = new Date(daytextt);
+          
+          const formattedStartDate = moment(startDate).format('DD MMM YYYY');
+          const formattedEndDate = moment(endDate).format('DD MMM YYYY');
+          
+          
+          const Farr = [
+            {
+              Customerid:`${customerid}`,
+              DateFill:`${orderProm}`,
+              fromdate:`${fromDate === null ? '' : formattedStartDate}`,
+              todate:`${toDate === null ? '' : formattedEndDate}`,
+              Search:`${searchVal}`,
+              Catgeory:`${category?.toLowerCase() === 'all' ? '' : category}`,
+              MetalPurity:`${metalPurity?.toLowerCase() === 'all' ? '' : metalPurity}`,
+              MetalColor:`${MetalColor?.toLowerCase() === 'all' ? '' : MetalColor}`,
+              JobList:`${jobStringArr}`,
+              StatusF:`${selectedStatus}`,
+              order:`${order === '' ? 'desc' : order}`,
+              orderBy:`${orderBy === '' ? 'Date' : orderBy}`,
+              // orderProm:`${orderProm}`,
+            }
+          ]
+          const jsonConvert = btoa((JSON.stringify(Farr)));
+          
+          const printMainUrl = `${PrintUrl}&Farr=${jsonConvert}`;
+          
+          const form = document.createElement('form');
+          form.setAttribute('method', 'post');
+          form.setAttribute('action', `${PrintUrl}`);
+          form.setAttribute('target', '_blank'); // Opens in a new tab
+        
+          const dataInput = document.createElement('input');
+          dataInput.setAttribute('type', 'hidden');
+          dataInput.setAttribute('name', 'Farr');
+          dataInput.setAttribute('value', jsonConvert);
+          form.appendChild(dataInput);
+        
+          document.body.appendChild(form);
+          
+          // Debugging - log the form HTML to see if everything looks correct
+          // console.log(form.outerHTML);
+        
+          // Submit the form
+          form.submit();
+    
 
-      let fromdate =  moment(fromDate)
-      let enddate =  moment(toDate)
-      let daytextf = fromdate?._i?.$d;
-      let daytextt = enddate?._i?.$d;
-      
-      const startDate = new Date(daytextf);
-      const endDate = new Date(daytextt);
-      
-      const formattedStartDate = moment(startDate).format('DD MMM YYYY');
-      const formattedEndDate = moment(endDate).format('DD MMM YYYY');
-      
-      
-      const Farr = [
-        {
-          Customerid:`${customerid}`,
-          DateFill:`${orderProm}`,
-          fromdate:`${fromDate === null ? '' : formattedStartDate}`,
-          todate:`${toDate === null ? '' : formattedEndDate}`,
-          Search:`${searchVal}`,
-          Catgeory:`${category?.toLowerCase() === 'all' ? '' : category}`,
-          MetalPurity:`${metalPurity?.toLowerCase() === 'all' ? '' : metalPurity}`,
-          MetalColor:`${MetalColor?.toLowerCase() === 'all' ? '' : MetalColor}`,
-          JobList:`${jobStringArr}`,
-          StatusF:`${selectedStatus}`,
-          order:`${'desc'}`,
-          orderBy:`${orderBy === '' ? 'Date' : orderBy}`,
-          // orderProm:`${orderProm}`,
-        }
-      ]
-
-      const jsonConvert = btoa((JSON.stringify(Farr)));
-      
-      const printMainUrl = `${PrintUrl}&Farr=${jsonConvert}`;
-      
-      const form = document.createElement('form');
-      form.setAttribute('method', 'post');
-      form.setAttribute('action', `${PrintUrl}`);
-      form.setAttribute('target', '_blank'); // Opens in a new tab
-    
-      const dataInput = document.createElement('input');
-      dataInput.setAttribute('type', 'hidden');
-      dataInput.setAttribute('name', 'Farr');
-      dataInput.setAttribute('value', jsonConvert);
-      form.appendChild(dataInput);
-    
-      document.body.appendChild(form);
-      
-      // Debugging - log the form HTML to see if everything looks correct
-      // console.log(form.outerHTML);
-    
-      // Submit the form
-      form.submit();
+      // }
+      // else{
+      //   setPrintJobError('Please select any one job for print');
+      // }
 
   }
 
-
-  
   // // working code 11-05-2024
   // const handleCheckboxChange = (event, rowIndex, row) => {
   //   console.log(event?.target?.checked);
@@ -904,6 +965,15 @@ const handleCheckboxChange = (event, rowIndex) => {
   setFilterData(newData);
 };
 
+
+const scrollToTop = () => {
+  // Find the table container element and set its scrollTop property to 0
+  const tableContainer = document.querySelector('.quotationJobSec');
+  if (tableContainer) {
+    tableContainer.scrollTop = 0;
+  }
+};
+
   return (
     <Box className='smilingSavedAddressMain quotationFiltersText' sx={{ padding: "20px", }}>
       <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -918,7 +988,7 @@ const handleCheckboxChange = (event, rowIndex) => {
             sx={{ display: "flex", alignItems: "center", flexDirection: "unset" }}
           >
             <FormControlLabel value="order" className='orderFrom QuotationJobAllBtnSecDate' control={<Radio />} label="Order Date" sx={{ padding: "0 20px 35px 0", marginRight: "0" }} />
-            <FormControlLabel value="prom" className='orderFrom QuotationJobAllBtnSecDate' control={<Radio />} label="From. Date" sx={{ padding: "0 10px 35px 0", marginRight: "0" }} />
+            <FormControlLabel value="prom" className='orderFrom QuotationJobAllBtnSecDate' control={<Radio />} label="Promise Date" sx={{ padding: "0 10px 35px 0", marginRight: "0" }} />
           </RadioGroup>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -992,7 +1062,7 @@ const handleCheckboxChange = (event, rowIndex) => {
           <Button variant='contained' className='muiSmilingRocksBtn' sx={{ padding: "7px 10px", minWidth: "max-content", background: "#7d7f85" }} onClick={(eve) => handleSearch(eve, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm)}><SearchIcon sx={{ color: "#fff !important" }} /></Button>
         </Box>
         <Box sx={{ position: "relative", padding: "0 15px 35px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
-          <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 10, top: "-10px", }}>Status</label>
+        <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-16px", }}>Status</label>
           {/* <FormControl sx={{ m: 1, width: 300 }}>
         <InputLabel id="demo-multiple-name-label">ALL</InputLabel>
         <Select
@@ -1033,9 +1103,10 @@ const handleCheckboxChange = (event, rowIndex) => {
                 onChange={handleStatus} // Assuming handleStatus function receives selected values
                 MenuProps={MenuProps}
                 input={<OutlinedInput  />}
-                
+                style={{minHeight:'1.8375em'}}
                 className='statusSelect'
                 size='small'
+                label='ALL'
                 renderValue={(selected) => {
                   if (selected.length === 0) {
                     return <em style={{color:'black'}}>Placeholder</em>;
@@ -1082,14 +1153,7 @@ const handleCheckboxChange = (event, rowIndex) => {
         </Box>
         <Box sx={{ position: "relative", padding: "0 15px 35px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
           <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-16px", }}>Category</label>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            className='categoryList'
-            value={category}
-            label="Status"
-            onChange={handleCategory}
-          >
+          <Select labelId="demo-simple-select-label" id="demo-simple-select" className='categoryList' value={category} label="Status" onChange={handleCategory} >
             {
               categoryList?.map((e, i) => {
                 return <MenuItem value={e?.value} key={i}>{e?.label}</MenuItem>
@@ -1137,6 +1201,7 @@ const handleCheckboxChange = (event, rowIndex) => {
         <Box sx={{ display: "flex", alignItems: "center", position: "relative", padding: "0 15px 35px 0", maxWidth: "max-content" }} className="searchbox QuotationJobAllBtnSec">
           <TextField id="standard-basic" label="Search" variant="outlined" value={searchVal} onChange={eve => {
             setSearchVal(eve?.target?.value);
+            setPage(0);
             handleSearch(eve, eve?.target?.value, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm);
           }} />
           <Button sx={{ padding: 0, maxWidth: "max-content", minWidth: "max-content", position: "absolute", right: "20px", color: "#757575" }}

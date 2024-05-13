@@ -399,11 +399,13 @@ const SalesReport = () => {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    scrollToTop();
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    scrollToTop();
   };
 
   const visibleRows = React.useMemo(
@@ -742,6 +744,14 @@ const SalesReport = () => {
     }
   }, []);
 
+  const scrollToTop = () => {
+    // Find the table container element and set its scrollTop property to 0
+    const tableContainer = document.querySelector('.quotationJobSec');
+    if (tableContainer) {
+      tableContainer.scrollTop = 0;
+    }
+  };
+
   return (
     <Box>
       <Box
@@ -1072,7 +1082,7 @@ const SalesReport = () => {
       ) : (
         <>
           <Paper sx={{ width: "100%", mb: 2 }} className="salesReportTableSec">
-            <TableContainer sx={{ maxHeight: 580 }}>
+            <TableContainer sx={{ maxHeight: 580 }} className="quotationJobSec">
               <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
                 <EnhancedTableHead
                   numSelected={selected.length}

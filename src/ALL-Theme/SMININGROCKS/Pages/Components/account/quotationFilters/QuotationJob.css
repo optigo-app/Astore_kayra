@@ -118,7 +118,9 @@
 .muiSmilingRocksBtn:hover svg {
     color: #7d7f85 !important;
 }
-
+/* .MuiSelect-select .MuiSelect-outlined .MuiSelect-multiple .MuiInputBase-input .MuiOutlinedInput-input .MuiInputBase-inputSizeSmall .css-jedpe8-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
+    min-height: 1.8375em !important;
+} */
 @media(max-width: 768px) {
     .QuotationJobAllBtn  {
         margin-bottom: 20px !important;

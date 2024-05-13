@@ -78,6 +78,9 @@ const descendingComparator = (a, b, orderBy) => {
     } else if (orderBy === 'SrNo' || orderBy === 'Amount') {
         // return a[orderBy] - b[orderBy];
         return b[orderBy] - a[orderBy];
+    } else if ((orderBy === 'StockDocumentNo') ) {
+        // Handle sorting for SKU# column
+        return customComparator_Col(a[orderBy], b[orderBy]);
     }  else {
         const valueA = typeof a[orderBy] === 'string' ? a[orderBy].toLowerCase() : a[orderBy];
         const valueB = typeof b[orderBy] === 'string' ? b[orderBy].toLowerCase() : b[orderBy];
@@ -91,7 +94,17 @@ const descendingComparator = (a, b, orderBy) => {
         return 0;
     }
 }
-
+const customComparator_Col = (a, b) => {
+    const regex = /([^\d]+)(\d+)/;
+    const [, wordA, numA] = a?.match(regex);
+    const [, wordB, numB] = b?.match(regex);
+    
+    if (wordA !== wordB) {
+        return wordA?.localeCompare(wordB);
+    }
+    
+    return parseInt(numB, 10) - parseInt(numA, 10);
+  };
 const getComparator = (order, orderBy) => {
     return order === 'desc'
         ? (a, b) => descendingComparator(a, b, orderBy)
@@ -241,11 +254,13 @@ const Sales = () => {
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
+        scrollToTop();
     };
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
+        scrollToTop();
     };
 
     const emptyRows =
@@ -269,6 +284,7 @@ const Sales = () => {
     }
 
     const handleSearch = (eve, searchValue, fromDatess, todatess) => {
+        setPage(0);
         let fromdates = `${fromDatess?.["$y"]}-${checkMonth(fromDatess?.["$M"])}-${fromDatess?.["$D"]}`;
         let todates = `${todatess?.["$y"]}-${checkMonth(todatess?.["$M"])}-${todatess?.["$D"]}`;
 
@@ -422,7 +438,13 @@ const Sales = () => {
     const handlePrintUrl = (printUrl) => {
         window.open(printUrl)
     }
-
+    const scrollToTop = () => {
+        // Find the table container element and set its scrollTop property to 0
+        const tableContainer = document.querySelector('.quotationJobSec');
+        if (tableContainer) {
+          tableContainer.scrollTop = 0;
+        }
+      };
     return (
         <Box className='smilingSavedAddressMain salesApiSection' sx={{ padding: "20px", }}>
             <Box sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -509,7 +531,7 @@ const Sales = () => {
             </Box>
             {isLoading ?
                 <Box sx={{ display: "flex", justifyContent: "center", paddingTop: "10px" }}><CircularProgress className='loadingBarManage' /></Box> : <Paper sx={{ width: '100%', mb: 2 }} className="salesApiTable">
-                    <TableContainer className='salesPartTable'>
+                    <TableContainer className='salesPartTable quotationJobSec'>
                         <Table
                             sx={{ minWidth: 750, border: "1px solid rgba(224, 224, 224, 1)", }}
                             aria-labelledby="tableTitle"
@@ -540,7 +562,10 @@ const Sales = () => {
                                             // selected={isItemSelected}
                                             sx={{ cursor: 'pointer' }}
                                         >
-                                            <TableCell component="td" id={labelId} scope="row" padding="none" align="center" > {index+1} </TableCell>
+                                            <TableCell component="td" id={labelId} scope="row" padding="none" align="center" > 
+                                            {page * rowsPerPage + index + 1}
+                                            {/* {index+1}  */}
+                                            </TableCell>
                                             <TableCell align="center">{row.Date}</TableCell>
                                             <TableCell align="center">{row.StockDocumentNo}</TableCell>
                                             <TableCell align="right">{formatAmount(row?.Amount)}</TableCell>

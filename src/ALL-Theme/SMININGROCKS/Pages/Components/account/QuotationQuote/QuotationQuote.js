@@ -52,8 +52,11 @@ const descendingComparator = (a, b, orderBy) => {
         }
         return 0;
     } else if (orderBy === 'SrNo' || orderBy === 'Amount') {
-        return a[orderBy] - b[orderBy];
-    } else {
+        return b[orderBy] - a[orderBy];
+    } else if ((orderBy === 'SKUNo') ) {
+        // Handle sorting for SKU# column
+        return customComparator_Col(a[orderBy], b[orderBy]);
+    }  else {
         const valueA = typeof a[orderBy] === 'string' ? a[orderBy].toLowerCase() : a[orderBy];
         const valueB = typeof b[orderBy] === 'string' ? b[orderBy].toLowerCase() : b[orderBy];
 
@@ -66,7 +69,17 @@ const descendingComparator = (a, b, orderBy) => {
         return 0;
     }
 }
-
+const customComparator_Col = (a, b) => {
+    const regex = /([^\d]+)(\d+)/;
+    const [, wordA, numA] = a?.match(regex);
+    const [, wordB, numB] = b?.match(regex);
+    
+    if (wordA !== wordB) {
+        return wordA?.localeCompare(wordB);
+    }
+    
+    return parseInt(numB, 10) - parseInt(numA, 10);
+  };
 
 const getComparator = (order, orderBy) => {
     return order === 'desc'
@@ -224,11 +237,13 @@ const QuotationQuote = () => {
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
+        scrollToTop();
     };
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
+        scrollToTop();
     };
 
     const emptyRows =
@@ -249,6 +264,7 @@ const QuotationQuote = () => {
         setToDate(null);
         setFilterData(data);
         setPage(0);
+        setRowsPerPage(10);
     }
 
     const reseltFil = () => {
@@ -261,6 +277,7 @@ const QuotationQuote = () => {
     }
 
     const handleSearch = (eve, searchValue, fromDatess, todatess) => {
+        setPage(0);
         let fromdates = `${fromDatess?.["$y"]}-${checkMonth(fromDatess?.["$M"])}-${fromDatess?.["$D"]}`;
         let todates = `${todatess?.["$y"]}-${checkMonth(todatess?.["$M"])}-${todatess?.["$D"]}`;
 
@@ -295,9 +312,9 @@ const QuotationQuote = () => {
                     let fromdat = moment(fromdates);
                     let todat = moment(todates);
                     let cutDat = moment(cutDate);
-                    if (moment(fromdates).isSameOrBefore(todates)) {
-                        const isBetween = cutDat.isBetween(fromdat, todat, null, '[]');
-                        if (isBetween || cutDat.isSame(fromdat) || cutDat.isSame(todat)) {
+                    if (moment(fromdates)?.isSameOrBefore(todates)) {
+                        const isBetween = cutDat?.isBetween(fromdat, todat, null, '[]');
+                        if (isBetween || cutDat?.isSame(fromdat) || cutDat?.isSame(todat)) {
                             flags.dateTo = true;
                             flags.dateFrom = true;
                         }
@@ -427,7 +444,13 @@ const QuotationQuote = () => {
     const handlePrintUrl = (printUrl) => {
         window.open(printUrl)
     }
- 
+    const scrollToTop = () => {
+        // Find the table container element and set its scrollTop property to 0
+        const tableContainer = document.querySelector('.quotationJobSec');
+        if (tableContainer) {
+          tableContainer.scrollTop = 0;
+        }
+      };
 
     return (
         <Box className='smilingSavedAddressMain salesApiSection' sx={{ padding: "20px", }}>
@@ -534,7 +557,7 @@ const QuotationQuote = () => {
             </Box>
             {isLoading ?
                 <Box sx={{ display: "flex", justifyContent: "center", paddingTop: "10px" }}><CircularProgress className='loadingBarManage' /></Box> : <Paper sx={{ width: '100%', mb: 2 }} className="salesApiTable">
-                    <TableContainer>
+                    <TableContainer className="quotationJobSec">
                         <Table
                             sx={{ minWidth: 750, border: "1px solid rgba(224, 224, 224, 1)", }}
                             aria-labelledby="tableTitle"
@@ -572,7 +595,8 @@ const QuotationQuote = () => {
                                                 padding="none"
                                                 align="center"
                                             >
-                                                {index + 1}
+                                                {/* {index + 1} */}
+                                                {page * rowsPerPage + index + 1}
                                             </TableCell>
                                             <TableCell align="center">{row.Date}</TableCell>
                                             <TableCell align="center">{row.SKUNo}</TableCell>
