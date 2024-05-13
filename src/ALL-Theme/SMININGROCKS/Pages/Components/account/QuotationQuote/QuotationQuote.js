@@ -52,7 +52,7 @@ const descendingComparator = (a, b, orderBy) => {
         }
         return 0;
     } else if (orderBy === 'SrNo' || orderBy === 'Amount') {
-        return a[orderBy] - b[orderBy];
+        return b[orderBy] - a[orderBy];
     } else if ((orderBy === 'SKUNo') ) {
         // Handle sorting for SKU# column
         return customComparator_Col(a[orderBy], b[orderBy]);
@@ -264,6 +264,7 @@ const QuotationQuote = () => {
         setToDate(null);
         setFilterData(data);
         setPage(0);
+        setRowsPerPage(10);
     }
 
     const reseltFil = () => {
@@ -276,6 +277,7 @@ const QuotationQuote = () => {
     }
 
     const handleSearch = (eve, searchValue, fromDatess, todatess) => {
+        setPage(0);
         let fromdates = `${fromDatess?.["$y"]}-${checkMonth(fromDatess?.["$M"])}-${fromDatess?.["$D"]}`;
         let todates = `${todatess?.["$y"]}-${checkMonth(todatess?.["$M"])}-${todatess?.["$D"]}`;
 
@@ -310,9 +312,9 @@ const QuotationQuote = () => {
                     let fromdat = moment(fromdates);
                     let todat = moment(todates);
                     let cutDat = moment(cutDate);
-                    if (moment(fromdates).isSameOrBefore(todates)) {
-                        const isBetween = cutDat.isBetween(fromdat, todat, null, '[]');
-                        if (isBetween || cutDat.isSame(fromdat) || cutDat.isSame(todat)) {
+                    if (moment(fromdates)?.isSameOrBefore(todates)) {
+                        const isBetween = cutDat?.isBetween(fromdat, todat, null, '[]');
+                        if (isBetween || cutDat?.isSame(fromdat) || cutDat?.isSame(todat)) {
                             flags.dateTo = true;
                             flags.dateFrom = true;
                         }
@@ -593,7 +595,8 @@ const QuotationQuote = () => {
                                                 padding="none"
                                                 align="center"
                                             >
-                                                {index + 1}
+                                                {/* {index + 1} */}
+                                                {page * rowsPerPage + index + 1}
                                             </TableCell>
                                             <TableCell align="center">{row.Date}</TableCell>
                                             <TableCell align="center">{row.SKUNo}</TableCell>

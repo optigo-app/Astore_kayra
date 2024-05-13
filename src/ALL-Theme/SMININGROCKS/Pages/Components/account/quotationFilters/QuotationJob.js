@@ -38,6 +38,7 @@ const CustomSortIcon = ({ order }) => {
 
 const QuotationJob = () => {
   const [showFilter, setShowFilter] = useState(false);
+  const [printJobError, setPrintJobError] = useState('');
 
   const [allChecked, setAllChecked] = useState(false);
   const [orderProm, setOrderProm] = useState('order');
@@ -182,23 +183,33 @@ const QuotationJob = () => {
   const [PrintUrl, setPrintUrl] = useState('');
 
   const handleOrderProms = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setOrderProm(event.target.value);
   };
   const handleStatus = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     // setStatus(event.target.value);
     setSelectedStatus(event.target.value);
     // handleSearch(event, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm);
     handleSearch(event, searchVal, fromDate, toDate, metalPurity, MetalColor, category, event.target.value, orderProm);
   };
   const handleCategory = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setCategory(event.target.value);
     handleSearch(event, searchVal, fromDate, toDate, metalPurity, MetalColor, event.target.value, statuse, orderProm);
   };
   const handleMetalColor = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setMetalColor(event.target.value);
     handleSearch(event, searchVal, fromDate, toDate, metalPurity, event.target.value, category, statuse, orderProm);
   };
   const handleMetalPurity = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setMetalPurity(event.target.value);
     handleSearch(event, searchVal, fromDate, toDate, event.target.value, MetalColor, category, statuse, orderProm);
   };
@@ -252,21 +263,41 @@ const QuotationJob = () => {
         metalPurity: false,
       }
       if (searchValue !== "") {
-        if (e?.["Sr#"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["Date"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["SKUNO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["PO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["JobNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["DesignNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["Category"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["metal_color"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["metal_purity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["PDate"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["FinalAmount"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["ProgressStatusName"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["Quantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["SuppliedQuantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase())) {
-          flags.search = true;
+        // if (e?.["Sr#"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["Date"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["SKUNO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["PO"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["JobNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["DesignNo"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["Category"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["metal_color"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["metal_purity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["PDate"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["FinalAmount"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["ProgressStatusName"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["Quantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
+        //   e?.["SuppliedQuantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()))
+        //    {
+        //   flags.search = true;
+        // }
+        const searchLower = searchValue?.trim()?.toLowerCase(); // Convert search value to lowercase
+        if (
+            (e?.["Sr#"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["Date"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["SKUNO"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["PO"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["JobNo"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["DesignNo"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["metal_color"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["metal_purity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["PDate"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["FinalAmount"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["ProgressStatusName"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["Quantity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["SuppliedQuantity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+            (e?.["Category"]?.toString()?.toLowerCase().startsWith(searchLower)) 
+          ) {
+            flags.search = true;
         }
       } else {
         flags.search = true;
@@ -343,13 +374,13 @@ const QuotationJob = () => {
 
 
 
-      if (e?.MetalType?.toString()?.toLowerCase()?.includes(metalPurities?.toLowerCase()) || metalPurities?.toLowerCase() === "all") {
+      if (e?.MetalType?.toString()?.toLowerCase()?.startsWith(metalPurities?.toLowerCase()) || metalPurities?.toLowerCase() === "all") {
         flags.metalPurity = true;
       }
-      if (e?.MetalColor?.toString()?.toLowerCase()?.includes(MetalColors?.toLowerCase()) || MetalColors?.toLowerCase() === "all") {
+      if (e?.MetalColor?.toString()?.toLowerCase()?.startsWith(MetalColors?.toLowerCase()) || MetalColors?.toLowerCase() === "all") {
         flags.MetalColor = true;
       }
-      if (e?.Category?.toString()?.toLowerCase()?.includes(categories?.toLowerCase()) || categories?.toLowerCase() === "all") {
+      if (e?.Category?.toString()?.toLowerCase()?.startsWith(categories?.toLowerCase()) || categories?.toLowerCase() === "all") {
         flags.category = true;
       }
 
@@ -396,6 +427,7 @@ const QuotationJob = () => {
   }
 
   const resetAllFilters = (eve) => {
+    setSelectedStatus([]);
     setOrderProm("order");
     setFromDate(null);
     setToDate(null);
@@ -406,9 +438,10 @@ const QuotationJob = () => {
     setSearchVal("");
     handleSearch(eve, "", null, null, metalPurityList[0]?.value, metalColorList[0]?.value, categoryList[0]?.value, statusList[0]?.value, "order");
     setFilterData(data);
-    setSelectedStatus([]);
     setAllChecked(false);
     scrollToTop();
+    setPage(0);
+    setRowsPerPage(10);
     // setOrderBy('');
     // setOrder('asc')
   }
@@ -431,7 +464,6 @@ const QuotationJob = () => {
   // }
 
   const handleRequestSort = (property) => {
-    console.log(property);
     let isAsc = ((orderBy === property) && (order === 'asc'));
     if(isAsc){
       setOrder('desc');
@@ -546,6 +578,7 @@ const QuotationJob = () => {
             return 0;
         }
     } else if(orderBy === 'FinalAmount'){
+      
       const valueA = parseFloat(a[orderBy]) || 0;
       const valueB = parseFloat(b[orderBy]) || 0;
 
@@ -555,7 +588,9 @@ const QuotationJob = () => {
       if (valueB > valueA) {
           return 1;
       }
+
       return 0;
+
     }else if ((orderBy === 'PO') || (orderBy === 'PO') || (orderBy === 'SKUNO') || (orderBy === 'DesignNo')) {
       // Handle sorting for SKU# column
       return customComparator_Col(a[orderBy], b[orderBy]);
@@ -572,7 +607,7 @@ const QuotationJob = () => {
         return 0;
     }
 }
-const customComparator_Col = (a, b) => {
+  const customComparator_Col = (a, b) => {
   const regex = /([^\d]+)(\d+)/;
   const [, wordA, numA] = a?.match(regex);
   const [, wordB, numB] = b?.match(regex);
@@ -677,88 +712,82 @@ const customComparator_Col = (a, b) => {
 
   const handlePrintJobs = async(filterdatas, mainData) => {
       let onlyTrueJobjs = filterdatas?.filter((e) => e?.isJobSelected === true);
-      if((filterdatas?.length === mainData?.length) && (onlyTrueJobjs?.length === 0)){
-        onlyTrueJobjs = [...mainData];
-      }
-      if(filterdatas?.length !== 0){
-        let onlyTrueJobjs2 = filterdatas?.filter((e) => e?.isJobSelected === true);
-        if(onlyTrueJobjs2?.length === 0){
-          onlyTrueJobjs = filterdatas; 
-        }else{
-          onlyTrueJobjs = onlyTrueJobjs2;
-        }
-      }
+      // if(onlyTrueJobjs?.length > 0){
 
-      let allAreChecked = [];
-      onlyTrueJobjs?.forEach((e) => {
-        let obj = {...e};
-        obj.isJobSelected = true;
-        allAreChecked.push(obj);
-      })
-      
-        let jobStringArr = allAreChecked?.map((e) => e?.JobNo)?.toString();
+          let allAreChecked = [];
+          onlyTrueJobjs?.forEach((e) => {
+            let obj = {...e};
+              obj.isJobSelected = true;
+              allAreChecked.push(obj);
+          });
+
+
+          let jobStringArr = allAreChecked?.map((e) => e?.JobNo)?.toString();
         
-        const storedData = localStorage.getItem('loginUserDetail');
-        const data = JSON.parse(storedData);
-        const customerid = data?.id;
+            const storedData = localStorage.getItem('loginUserDetail');
+            const data = JSON.parse(storedData);
+            const customerid = data?.id;
+    
+          let fromdate =  moment(fromDate)
+          let enddate =  moment(toDate)
+          let daytextf = fromdate?._i?.$d;
+          let daytextt = enddate?._i?.$d;
+          
+          const startDate = new Date(daytextf);
+          const endDate = new Date(daytextt);
+          
+          const formattedStartDate = moment(startDate).format('DD MMM YYYY');
+          const formattedEndDate = moment(endDate).format('DD MMM YYYY');
+          
+          
+          const Farr = [
+            {
+              Customerid:`${customerid}`,
+              DateFill:`${orderProm}`,
+              fromdate:`${fromDate === null ? '' : formattedStartDate}`,
+              todate:`${toDate === null ? '' : formattedEndDate}`,
+              Search:`${searchVal}`,
+              Catgeory:`${category?.toLowerCase() === 'all' ? '' : category}`,
+              MetalPurity:`${metalPurity?.toLowerCase() === 'all' ? '' : metalPurity}`,
+              MetalColor:`${MetalColor?.toLowerCase() === 'all' ? '' : MetalColor}`,
+              JobList:`${jobStringArr}`,
+              StatusF:`${selectedStatus}`,
+              order:`${order === '' ? 'desc' : order}`,
+              orderBy:`${orderBy === '' ? 'Date' : orderBy}`,
+              // orderProm:`${orderProm}`,
+            }
+          ]
+          const jsonConvert = btoa((JSON.stringify(Farr)));
+          
+          const printMainUrl = `${PrintUrl}&Farr=${jsonConvert}`;
+          
+          const form = document.createElement('form');
+          form.setAttribute('method', 'post');
+          form.setAttribute('action', `${PrintUrl}`);
+          form.setAttribute('target', '_blank'); // Opens in a new tab
+        
+          const dataInput = document.createElement('input');
+          dataInput.setAttribute('type', 'hidden');
+          dataInput.setAttribute('name', 'Farr');
+          dataInput.setAttribute('value', jsonConvert);
+          form.appendChild(dataInput);
+        
+          document.body.appendChild(form);
+          
+          // Debugging - log the form HTML to see if everything looks correct
+          // console.log(form.outerHTML);
+        
+          // Submit the form
+          form.submit();
+    
 
-      let fromdate =  moment(fromDate)
-      let enddate =  moment(toDate)
-      let daytextf = fromdate?._i?.$d;
-      let daytextt = enddate?._i?.$d;
-      
-      const startDate = new Date(daytextf);
-      const endDate = new Date(daytextt);
-      
-      const formattedStartDate = moment(startDate).format('DD MMM YYYY');
-      const formattedEndDate = moment(endDate).format('DD MMM YYYY');
-      
-      
-      const Farr = [
-        {
-          Customerid:`${customerid}`,
-          DateFill:`${orderProm}`,
-          fromdate:`${fromDate === null ? '' : formattedStartDate}`,
-          todate:`${toDate === null ? '' : formattedEndDate}`,
-          Search:`${searchVal}`,
-          Catgeory:`${category?.toLowerCase() === 'all' ? '' : category}`,
-          MetalPurity:`${metalPurity?.toLowerCase() === 'all' ? '' : metalPurity}`,
-          MetalColor:`${MetalColor?.toLowerCase() === 'all' ? '' : MetalColor}`,
-          JobList:`${jobStringArr}`,
-          StatusF:`${selectedStatus}`,
-          order:`${'desc'}`,
-          orderBy:`${orderBy === '' ? 'Date' : orderBy}`,
-          // orderProm:`${orderProm}`,
-        }
-      ]
-
-      const jsonConvert = btoa((JSON.stringify(Farr)));
-      
-      const printMainUrl = `${PrintUrl}&Farr=${jsonConvert}`;
-      
-      const form = document.createElement('form');
-      form.setAttribute('method', 'post');
-      form.setAttribute('action', `${PrintUrl}`);
-      form.setAttribute('target', '_blank'); // Opens in a new tab
-    
-      const dataInput = document.createElement('input');
-      dataInput.setAttribute('type', 'hidden');
-      dataInput.setAttribute('name', 'Farr');
-      dataInput.setAttribute('value', jsonConvert);
-      form.appendChild(dataInput);
-    
-      document.body.appendChild(form);
-      
-      // Debugging - log the form HTML to see if everything looks correct
-      // console.log(form.outerHTML);
-    
-      // Submit the form
-      form.submit();
+      // }
+      // else{
+      //   setPrintJobError('Please select any one job for print');
+      // }
 
   }
 
-
-  
   // // working code 11-05-2024
   // const handleCheckboxChange = (event, rowIndex, row) => {
   //   console.log(event?.target?.checked);
@@ -1124,14 +1153,7 @@ const scrollToTop = () => {
         </Box>
         <Box sx={{ position: "relative", padding: "0 15px 35px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
           <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-16px", }}>Category</label>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            className='categoryList'
-            value={category}
-            label="Status"
-            onChange={handleCategory}
-          >
+          <Select labelId="demo-simple-select-label" id="demo-simple-select" className='categoryList' value={category} label="Status" onChange={handleCategory} >
             {
               categoryList?.map((e, i) => {
                 return <MenuItem value={e?.value} key={i}>{e?.label}</MenuItem>
@@ -1179,6 +1201,7 @@ const scrollToTop = () => {
         <Box sx={{ display: "flex", alignItems: "center", position: "relative", padding: "0 15px 35px 0", maxWidth: "max-content" }} className="searchbox QuotationJobAllBtnSec">
           <TextField id="standard-basic" label="Search" variant="outlined" value={searchVal} onChange={eve => {
             setSearchVal(eve?.target?.value);
+            setPage(0);
             handleSearch(eve, eve?.target?.value, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm);
           }} />
           <Button sx={{ padding: 0, maxWidth: "max-content", minWidth: "max-content", position: "absolute", right: "20px", color: "#757575" }}

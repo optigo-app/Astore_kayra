@@ -284,6 +284,7 @@ const Sales = () => {
     }
 
     const handleSearch = (eve, searchValue, fromDatess, todatess) => {
+        setPage(0);
         let fromdates = `${fromDatess?.["$y"]}-${checkMonth(fromDatess?.["$M"])}-${fromDatess?.["$D"]}`;
         let todates = `${todatess?.["$y"]}-${checkMonth(todatess?.["$M"])}-${todatess?.["$D"]}`;
 
@@ -561,7 +562,10 @@ const Sales = () => {
                                             // selected={isItemSelected}
                                             sx={{ cursor: 'pointer' }}
                                         >
-                                            <TableCell component="td" id={labelId} scope="row" padding="none" align="center" > {index+1} </TableCell>
+                                            <TableCell component="td" id={labelId} scope="row" padding="none" align="center" > 
+                                            {page * rowsPerPage + index + 1}
+                                            {/* {index+1}  */}
+                                            </TableCell>
                                             <TableCell align="center">{row.Date}</TableCell>
                                             <TableCell align="center">{row.StockDocumentNo}</TableCell>
                                             <TableCell align="right">{formatAmount(row?.Amount)}</TableCell>
