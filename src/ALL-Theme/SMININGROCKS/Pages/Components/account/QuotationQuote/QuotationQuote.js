@@ -578,8 +578,7 @@ const QuotationQuote = () => {
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
-                                        <TableRow
-                                            hover
+                                        <TableRow hover
                                             onClick={(event) => handleClick(event, index)}
                                             // role="checkbox"
                                             // aria-checked={isItemSelected}
