@@ -629,6 +629,7 @@ const SalesReport = () => {
     setToDate(null);
     setSearchVal("");
     setFilterData(data);
+    setPage(0);
   };
 
   const handleimageShow = (eve, img) => {

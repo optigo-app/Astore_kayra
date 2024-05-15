@@ -121,6 +121,20 @@
 /* .MuiSelect-select .MuiSelect-outlined .MuiSelect-multiple .MuiInputBase-input .MuiOutlinedInput-input .MuiInputBase-inputSizeSmall .css-jedpe8-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
     min-height: 1.8375em !important;
 } */
+
+
+
+/* 
+.statusSelect{
+
+}
+.css-10nakn3-MuiModal-root-MuiPopover-root-MuiMenu-root{
+    position: absolute !important;
+    top: 0px !important;
+}
+.MuiBackdrop-root .MuiBackdrop-invisible .MuiModal-backdrop .css-g3hgs1-MuiBackdrop-root-MuiModal-backdrop{
+    position: absolute !important;
+} */
 @media(max-width: 768px) {
     .QuotationJobAllBtn  {
         margin-bottom: 20px !important;
