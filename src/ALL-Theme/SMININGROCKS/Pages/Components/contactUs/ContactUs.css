@@ -32,7 +32,7 @@
 }
 
 .Fo-contactBox2 {
-    width: 25%;
+    width: 35%;
     margin: 130px;
 }
 
@@ -68,6 +68,24 @@
 .error{
     color: red;
 }
+
+.tab-buttons {
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px ;
+  }
+  
+  .tab-buttons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-right: 10px;
+  }
+  
+  .tab-buttons button.active {
+    border-bottom: 2px solid blue;
+  }
 
 @media screen and (min-width:1441px) {
     .mobileHeaderSmining {
