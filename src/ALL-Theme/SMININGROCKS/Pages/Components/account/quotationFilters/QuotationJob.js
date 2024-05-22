@@ -1061,8 +1061,8 @@ const scrollToTop = () => {
         <Box sx={{ padding: "0 15px 35px 0", }} className="QuotationJobAllBtnSec">
           <Button variant='contained' className='muiSmilingRocksBtn' sx={{ padding: "7px 10px", minWidth: "max-content", background: "#7d7f85" }} onClick={(eve) => handleSearch(eve, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm)}><SearchIcon sx={{ color: "#fff !important" }} /></Button>
         </Box>
-        <Box sx={{ position: "relative", padding: "0 15px 35px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
-        <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-16px", }}>Status</label>
+        <Box sx={{ position: "relative", padding: "0 15px 40px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
+        <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-8px", }}>Status</label>
           {/* <FormControl sx={{ m: 1, width: 300 }}>
         <InputLabel id="demo-multiple-name-label">ALL</InputLabel>
         <Select
@@ -1103,7 +1103,7 @@ const scrollToTop = () => {
                 onChange={handleStatus} // Assuming handleStatus function receives selected values
                 MenuProps={MenuProps}
                 input={<OutlinedInput  />}
-                style={{minHeight:'1.8375em'}}
+                style={{minHeight:'2.9375em'}}
                 className='statusSelect'
                 size='small'
                 label='ALL'

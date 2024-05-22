@@ -5,6 +5,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, CircularProgress } 
 import AccountOrderHistory from "../../../jsonFile/account/AccountOrderHistoryApi.json";
 import axios from "axios";
 import { CommonAPI } from "../../../../Utils/API/CommonAPI";
+import { formatAmount } from "../../../../Utils/globalFunctions/GlobalFunction";
 // import ReactPaginate from 'react-paginate';
 const OrderHistory = () => {
   const [orderHistoryData, setOrderHistoryData] = useState([]);
@@ -172,7 +173,6 @@ const OrderHistory = () => {
       console.log(error);
     }
   };
-  console.log('oderder----', orderDetails);
 
   return (
     <div>
@@ -185,7 +185,6 @@ const OrderHistory = () => {
         <div className="orderedItems user-select-none">
           {orderHistoryData?.length > 0 ?
             orderHistoryData?.map((e) => {
-              console.log('e----', e);
               return (
                 <div className="border orderHistory p-1 px-0 my-4" key={e?.id} onClick={() => handleClick(e)}>
                   <div className=" d-flex w-100 justify-content-between align-items-center p-1 d_block">
@@ -219,7 +218,7 @@ const OrderHistory = () => {
                       <div
                         dangerouslySetInnerHTML={{ __html: e?.Currencysymbol }}
                       ></div>{" "}
-                      <div className="px-1">{e?.orderAmountwithvat}</div>
+                      <div className="px-1">{formatAmount(e?.orderAmountwithvat)}</div>
                     </div>
                   </div>
                   {/* <Accordion sx={{boxShadow:'none'}}>
@@ -263,7 +262,7 @@ const OrderHistory = () => {
                                             <h5 className="card-title">{el?.metaltypename} {el?.metalcolorname}</h5>
                                             <p className="card-text">{el?.designno}</p>
                                             <p className="card-text">
-                                              <span dangerouslySetInnerHTML={{ __html: e?.Currencysymbol }}></span> {el?.TotalUnitCostWithDiscount}
+                                              <span dangerouslySetInnerHTML={{ __html: e?.Currencysymbol }}></span> {formatAmount(el?.TotalUnitCostWithDiscount)}
                                             </p>
                                           </div>
                                         </div>
@@ -277,7 +276,7 @@ const OrderHistory = () => {
                                 <div style={{ width: '40%' }}>Total :</div>
                                 <div style={{ width: '60%' }} className="d-flex align-items-center"> <div className="pe-1"
                                   dangerouslySetInnerHTML={{ __html: e?.Currencysymbol }}
-                                ></div>{e?.orderAmountwithvat}</div>
+                                ></div>{formatAmount(e?.orderAmountwithvat)}</div>
                               </div>
                             </div>
                           </div>
