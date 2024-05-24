@@ -523,6 +523,8 @@ const ProdDetail = () => {
 
   useEffect(() => {
     const fetchProductThumbnails = async () => {
+
+        
       if (!productData?.ThumbImagePath) return;
 
       const thumImgPromises = productData?.ThumbImagePath?.split(",").map(async (data, i) => {
@@ -540,7 +542,7 @@ const ProdDetail = () => {
 
     fetchProductThumbnails();
 
-  }, [productData?.ThumbImagePath]); // Add dependencies if needed
+  }, [productData?.ThumbImagePath]); 
 
 
   useEffect(() => {
