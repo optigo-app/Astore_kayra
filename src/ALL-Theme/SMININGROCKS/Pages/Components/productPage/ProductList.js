@@ -109,7 +109,7 @@ const ProductList = () => {
   const [isFilterData, setIsFilterData] = useState(false)
   const [rangeProData,setRangeProData]=useState([])
 
-  console.log("alternativeData",newProData?.length?newProData:ProductApiData2);
+  // console.log("alternativeData",newProData?.length?newProData:ProductApiData2);
 
   // useEffect(()=>{
   //   // setTimeout(()=>{
@@ -203,12 +203,12 @@ const ProductList = () => {
     }
   }, [cartData])
 
-  console.log("cartFlag",cartData,cartFlag)
-  console.log("wishFlag",WishData,wishFlag)
+  // console.log("cartFlag",cartData,cartFlag)
+  // console.log("wishFlag",WishData,wishFlag)
 
   const WishListToCart = () =>{
     let findData = Object.keys(wishFlag).filter((wd) => Object.keys(cartFlag).find((cd) => wd === cd))
-    console.log("findData",findData)
+    // console.log("findData",findData)
     if (findData) {
       wishFlag[findData] = false
       setWishFlag(wishFlag)
@@ -333,7 +333,7 @@ const ProductList = () => {
           updMT = newPriceData?.D ?? ""
           updMC = newPriceData?.F ?? ""
         }
-        console.log("priceprod", product?.designno, price);
+        // console.log("priceprod", product?.designno, price);
         return { ...product, price, markup, metalrd, diard1, csrd2, updNWT, updGWT, updDWT, updDPCS, updCWT, updCPCS, updMT, updMC }
       }));
 
@@ -419,7 +419,7 @@ const ProductList = () => {
     }
 
     if(searchData){
-      console.log("search",searchData);
+      // console.log("search",searchData);
       setTimeout(()=>{
         localStorage.setItem("searchdata",JSON.stringify(searchData))
       },100)
@@ -839,7 +839,7 @@ const ProductList = () => {
 
     let FilterCheckedLength = (Object.values(filterChecked)).filter(fc => fc.checked !== false).filter(fc => fc.checked !== undefined)
 
-    console.log("isFilterData", FilterCheckedLength?.length, newProData?.length)
+    // console.log("isFilterData", FilterCheckedLength?.length, newProData?.length)
     setTimeout(() => {
       if (FilterCheckedLength?.length > 0 && newProData?.length === 0) {
         setIsFilterData(true)
@@ -981,7 +981,7 @@ const ProductList = () => {
 
         const product = prod
 
-        console.log("prod",prod)
+        // console.log("prod",prod)
 
         const finalJSON = {
           "stockweb_event": "",
@@ -1237,7 +1237,7 @@ const ProductList = () => {
           "Designid": `${product?.Designid ?? ""}`
         }
 
-        console.log("product", finalJSON)
+        // console.log("product", finalJSON)
 
 
         const encodedCombinedValue = btoa(JSON.stringify(finalJSON));
