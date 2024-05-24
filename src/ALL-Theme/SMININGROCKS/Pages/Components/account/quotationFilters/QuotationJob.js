@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
-import { Button, CircularProgress, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField } from '@mui/material';
+import { Button, Checkbox, Chip, CircularProgress, FormControl, FormControlLabel, InputLabel, ListItemText, MenuItem, OutlinedInput, Radio, RadioGroup, Select, TextField } from '@mui/material';
 import "./QuotationJob.css";
+import { formatAmount } from '../../../../Utils/globalFunctions/GlobalFunction';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
@@ -25,6 +26,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { checkMonth } from '../../../../Utils/globalFunctions/GlobalFunction';
 import { CommonAPI } from '../../../../Utils/API/CommonAPI';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 const CustomSortIcon = ({ order }) => {
   return (
     <>
@@ -35,20 +37,20 @@ const CustomSortIcon = ({ order }) => {
 };
 
 const QuotationJob = () => {
+  const [showFilter, setShowFilter] = useState(false);
+  const [printJobError, setPrintJobError] = useState('');
 
+  const [allChecked, setAllChecked] = useState(false);
   const [orderProm, setOrderProm] = useState('order');
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [filterData2, setFilterData2] = useState([]);
   const [searchVal, setSearchVal] = useState("");
   const [orderBy, setOrderBy] = useState('');
-  const [order, setOrder] = useState('asc');
-  const [statusList, setStatusList] = useState([
-    // { id: 0, label: "All", value: "All" },
-    // { id: 1, label: "Pending", value: "Pending" },
-    // { id: 2, label: "In Production", value: "In Production" },
-  ]);
+  const [order, setOrder] = useState('');
+  const [statusList, setStatusList] = useState([]);
   const [categoryList, setCategoryList] = useState([
     // { id: 0, label: "All", value: "All" },
     // { id: 1, label: "Bangle", value: "Bangle" },
@@ -176,31 +178,45 @@ const QuotationJob = () => {
 
   const fromDateRef = useRef(null);
   const toDateRef = useRef(null);
-
+  const [selectedStatus, setSelectedStatus] = useState([]);
+  
+  const [PrintUrl, setPrintUrl] = useState('');
 
   const handleOrderProms = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setOrderProm(event.target.value);
   };
   const handleStatus = (event) => {
-    setStatus(event.target.value);
+    setPage(0);
+    setRowsPerPage(10);
+    // setStatus(event.target.value);
+    setSelectedStatus(event.target.value);
     // handleSearch(event, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm);
     handleSearch(event, searchVal, fromDate, toDate, metalPurity, MetalColor, category, event.target.value, orderProm);
   };
   const handleCategory = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setCategory(event.target.value);
     handleSearch(event, searchVal, fromDate, toDate, metalPurity, MetalColor, event.target.value, statuse, orderProm);
   };
   const handleMetalColor = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setMetalColor(event.target.value);
     handleSearch(event, searchVal, fromDate, toDate, metalPurity, event.target.value, category, statuse, orderProm);
   };
   const handleMetalPurity = (event) => {
+    setPage(0);
+    setRowsPerPage(10);
     setMetalPurity(event.target.value);
     handleSearch(event, searchVal, fromDate, toDate, event.target.value, MetalColor, category, statuse, orderProm);
   };
   moment.locale('en-gb');
 
   const columns = [
+    { id: 'checkbox', label: <Checkbox />, minWidth: 50, align: "center" },
     { id: 'Sr#', label: 'Sr No', minWidth: 85, align: "center" },
     { id: 'Date', label: 'Date', minWidth: 130, align: "center" },
     { id: 'SKUNO', label: 'SKU#', minWidth: 110, align: "center" },
@@ -220,11 +236,15 @@ const QuotationJob = () => {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    setAllChecked(false);
+    scrollToTop();
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+    setAllChecked(false);
+    scrollToTop();
   };
 
   const handleSearch = (eve, searchValue, fromDatess, todatess, metalPurities, MetalColors, categories, statuss, orderPromDate) => {
@@ -242,7 +262,6 @@ const QuotationJob = () => {
         search: false,
         metalPurity: false,
       }
-      console.log('search value---', statuss);
       if (searchValue !== "") {
         if (e?.["Sr#"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
           e?.["Date"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
@@ -257,9 +276,29 @@ const QuotationJob = () => {
           e?.["FinalAmount"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
           e?.["ProgressStatusName"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
           e?.["Quantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()) ||
-          e?.["SuppliedQuantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase())) {
+          e?.["SuppliedQuantity"]?.toString()?.toLowerCase()?.includes(searchValue?.trim()?.toLowerCase()))
+           {
           flags.search = true;
         }
+        // const searchLower = searchValue?.trim()?.toLowerCase(); // Convert search value to lowercase
+        // if (
+        //     (e?.["Sr#"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["Date"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["SKUNO"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["PO"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["JobNo"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["DesignNo"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["metal_color"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["metal_purity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["PDate"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["FinalAmount"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["ProgressStatusName"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["Quantity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["SuppliedQuantity"]?.toString()?.toLowerCase().startsWith(searchLower)) ||
+        //     (e?.["Category"]?.toString()?.toLowerCase().startsWith(searchLower)) 
+        //   ) {
+        //     flags.search = true;
+        // }
       } else {
         flags.search = true;
       }
@@ -331,18 +370,48 @@ const QuotationJob = () => {
         //  }
       }
 
-      if (e?.MetalType?.toString()?.toLowerCase()?.includes(metalPurities?.toLowerCase()) || metalPurities?.toLowerCase() === "all") {
+
+
+
+
+      if (e?.MetalType?.toString()?.toLowerCase()?.startsWith(metalPurities?.toLowerCase()) || metalPurities?.toLowerCase() === "all") {
         flags.metalPurity = true;
       }
-      if (e?.MetalColor?.toString()?.toLowerCase()?.includes(MetalColors?.toLowerCase()) || MetalColors?.toLowerCase() === "all") {
+      if (e?.MetalColor?.toString()?.toLowerCase()?.startsWith(MetalColors?.toLowerCase()) || MetalColors?.toLowerCase() === "all") {
         flags.MetalColor = true;
       }
-      if (e?.Category?.toString()?.toLowerCase()?.includes(categories?.toLowerCase()) || categories?.toLowerCase() === "all") {
+      if (e?.Category?.toString()?.toLowerCase()?.startsWith(categories?.toLowerCase()) || categories?.toLowerCase() === "all") {
         flags.category = true;
       }
-      if ((e?.ProgressStatusName?.toString()?.toLowerCase() === statuss?.toLowerCase()) || statuss?.toLowerCase() === "all") {
-        flags.status = true;
+
+
+
+
+      // if ((e?.ProgressStatusName?.toString()?.toLowerCase() === statuss?.toLowerCase()) || statuss?.toLowerCase() === "all") {
+      //   flags.status = true;
+      // }
+
+
+
+      if (!Array.isArray(statuss) || statuss?.length === 0) {
+        flags.status = true; // Show all data
+      } else {
+        // Check if any selected status matches the ProgressStatusName
+        if (Array.isArray(statuss)) {
+          if (statuss.includes(e?.ProgressStatusName)) {
+            flags.status = true;
+          }
+        } else {
+          if (e?.ProgressStatusName === statuss || statuss === "all") {
+            flags.status = true;
+          }
+        }
       }
+
+
+
+
+
 
       if (flags.dateFrom === true && flags.dateTo === true && flags.status === true && flags.category === true && flags.MetalColor === true && flags.search === true && flags.metalPurity === true) {
         filteredData.push(e);
@@ -358,6 +427,7 @@ const QuotationJob = () => {
   }
 
   const resetAllFilters = (eve) => {
+    setSelectedStatus([]);
     setOrderProm("order");
     setFromDate(null);
     setToDate(null);
@@ -368,6 +438,12 @@ const QuotationJob = () => {
     setSearchVal("");
     handleSearch(eve, "", null, null, metalPurityList[0]?.value, metalColorList[0]?.value, categoryList[0]?.value, statusList[0]?.value, "order");
     setFilterData(data);
+    setAllChecked(false);
+    scrollToTop();
+    setPage(0);
+    setRowsPerPage(10);
+    // setOrderBy('');
+    // setOrder('asc')
   }
 
   const resetAllFilt = () => {
@@ -388,9 +464,28 @@ const QuotationJob = () => {
   // }
 
   const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    let isAsc = ((orderBy === property) && (order === 'asc'));
+    if(isAsc){
+      setOrder('desc');
+    }else{
+      setOrder('asc');
+    }
+    // setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+    const sortedData = stableSort(data, getComparator(order, property));
+    setData(sortedData); // Update the data array with sorted data
+  
+    // Update the filterData array with the sorted data
+    const sortedFilterData = stableSort(filterData, getComparator(order, property));
+    // setPage(0);
+    setFilterData(sortedFilterData);
+
+    //  let arr = data?.map((e) => {
+    //   e.isJobSelected = false;
+    //   return e;
+    //  })
+    //  setFilterData(arr);
+     
   };
 
   function stableSort(array, comparator) {
@@ -433,24 +528,40 @@ const QuotationJob = () => {
     Dec: 11
   };
   
+  // function parseCustomDate(dateString) {
+  //   const parts = dateString?.split(' ');
+  //   if (parts?.length !== 3) {
+  //     throw new Error('Invalid date format');
+  //   }
+  //   const day = parseInt(parts[0]);
+  //   const month = months[parts[1]];
+  //   const year = parseInt(parts[2]);
+  //   if (isNaN(day) || isNaN(month) || isNaN(year)) {
+  //     throw new Error('Invalid date format');
+  //   }
+  //   return new Date(year, month, day);
+  // }
   function parseCustomDate(dateString) {
+    const months = {
+      Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+      Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+    };
     const parts = dateString?.split(' ');
-    if (parts.length !== 3) {
+    if (parts?.length !== 3) {
       throw new Error('Invalid date format');
     }
     const day = parseInt(parts[0]);
-    const month = months[parts[1]];
+    const month = months[parts[1].substring(0, 3)]; // Extract the first three characters of the month name
     const year = parseInt(parts[2]);
     if (isNaN(day) || isNaN(month) || isNaN(year)) {
       throw new Error('Invalid date format');
     }
     return new Date(year, month, day);
   }
-  
   function descendingComparator(a, b, orderBy) {
     if (!orderBy) return 0; // Add null check for orderBy
     
-    if (orderBy === 'Date') {
+    if (orderBy === 'Date' || orderBy === 'PDate') {
         try {
             const dateA = parseCustomDate(a[orderBy]);
             const dateB = parseCustomDate(b[orderBy]);
@@ -466,7 +577,24 @@ const QuotationJob = () => {
             console.error('Error parsing date:', error.message);
             return 0;
         }
-    } else {
+    } else if(orderBy === 'FinalAmount'){
+      
+      const valueA = parseFloat(a[orderBy]) || 0;
+      const valueB = parseFloat(b[orderBy]) || 0;
+
+      if (valueB < valueA) {
+          return -1;
+      }
+      if (valueB > valueA) {
+          return 1;
+      }
+
+      return 0;
+
+    }else if ((orderBy === 'PO') || (orderBy === 'PO') || (orderBy === 'SKUNO') || (orderBy === 'DesignNo')) {
+      // Handle sorting for SKU# column
+      return customComparator_Col(a[orderBy], b[orderBy]);
+  }  else {
         const valueA = a[orderBy]?.toString()?.toLowerCase() || '';
         const valueB = b[orderBy]?.toString()?.toLowerCase() || '';
 
@@ -479,7 +607,17 @@ const QuotationJob = () => {
         return 0;
     }
 }
-
+  const customComparator_Col = (a, b) => {
+  const regex = /([^\d]+)(\d+)/;
+  const [, wordA, numA] = a?.match(regex);
+  const [, wordB, numB] = b?.match(regex);
+  
+  if (wordA !== wordB) {
+      return wordA?.localeCompare(wordB);
+  }
+  
+  return parseInt(numB, 10) - parseInt(numA, 10);
+};
   const fetchData = async () => {
     try {
       setIsLoading(true);
@@ -496,11 +634,13 @@ const QuotationJob = () => {
       // {"CurrencyRate":"1","FrontEnd_RegNo":"95oztttesi0o50vr","Customerid":"856"}
       const encodedCombinedValue = btoa(combinedValue);
       const body = {
-        "con": `{\"id\":\"Store\",\"mode\":\"getjob\",\"appuserid\":\"${data.email1}\"}`,
+        "con": `{\"id\":\"Store\",\"mode\":\"getjob\",\"appuserid\":\"${data?.email1}\"}`,
         "f": "zen (cartcount)",
         p: encodedCombinedValue
       };
       const response = await CommonAPI(body);
+      // setCheckboxState(new Array(response?.Data?.rd?.length)?.fill(false));
+      setPrintUrl(response?.Data?.rd1[0]?.PrintUrl);
       if (response.Data?.rd) {
 
         let datass = [];
@@ -508,9 +648,12 @@ const QuotationJob = () => {
         let allCategory = [];
         let allMetalColor = [];
         let allMetalPurity = [];
+        
         response?.Data?.rd?.forEach((e, i) => {
           let obj = { ...e };
+          obj["checkbox"] = <Checkbox />;
           obj["Sr#"] = i + 1;
+          obj["isJobSelected"] = false;
           datass?.push(obj);
           let findStatus = allStatus?.findIndex((ele, ind) => ele?.label === e?.ProgressStatusName);
           let findCategory = allCategory?.findIndex((ele, ind) => ele?.label === e?.Category);
@@ -529,11 +672,12 @@ const QuotationJob = () => {
             allMetalPurity?.push({ id: allMetalPurity?.length, label: e?.MetalType, value: e?.MetalType, });
           }
         });
-        allStatus?.unshift({ id: allStatus?.length, label: "ALL", value: "ALL" });
+        // allStatus?.unshift({ id: allStatus?.length, label: "ALL", value: "ALL" });
         allCategory?.unshift({ id: allCategory?.length, label: "ALL", value: "ALL" });
         allMetalColor?.unshift({ id: allMetalColor?.length, label: "ALL", value: "ALL" });
         allMetalPurity?.unshift({ id: allMetalPurity?.length, label: "ALL", value: "ALL" });
-        setStatusList(allStatus);
+         let allStatus2 = allStatus?.filter((e) => (e?.label !== '' && e?.value !== ''))
+        setStatusList(allStatus2);
         setCategoryList(allCategory);
         setmetalColorList(allMetalColor);
         setMetalPurityList(allMetalPurity);
@@ -565,6 +709,271 @@ const QuotationJob = () => {
     }
   }, []);
 
+
+  const handlePrintJobs = async(filterdatas, mainData) => {
+      let onlyTrueJobjs = filterdatas?.filter((e) => e?.isJobSelected === true);
+      // if(onlyTrueJobjs?.length > 0){
+
+          let allAreChecked = [];
+          onlyTrueJobjs?.forEach((e) => {
+            let obj = {...e};
+              obj.isJobSelected = true;
+              allAreChecked.push(obj);
+          });
+
+
+          let jobStringArr = allAreChecked?.map((e) => e?.JobNo)?.toString();
+        
+            const storedData = localStorage.getItem('loginUserDetail');
+            const data = JSON.parse(storedData);
+            const customerid = data?.id;
+    
+          let fromdate =  moment(fromDate)
+          let enddate =  moment(toDate)
+          let daytextf = fromdate?._i?.$d;
+          let daytextt = enddate?._i?.$d;
+          
+          const startDate = new Date(daytextf);
+          const endDate = new Date(daytextt);
+          
+          const formattedStartDate = moment(startDate).format('DD MMM YYYY');
+          const formattedEndDate = moment(endDate).format('DD MMM YYYY');
+          
+          
+          const Farr = [
+            {
+              Customerid:`${customerid}`,
+              DateFill:`${orderProm}`,
+              fromdate:`${fromDate === null ? '' : formattedStartDate}`,
+              todate:`${toDate === null ? '' : formattedEndDate}`,
+              Search:`${searchVal}`,
+              Catgeory:`${category?.toLowerCase() === 'all' ? '' : category}`,
+              MetalPurity:`${metalPurity?.toLowerCase() === 'all' ? '' : metalPurity}`,
+              MetalColor:`${MetalColor?.toLowerCase() === 'all' ? '' : MetalColor}`,
+              JobList:`${jobStringArr}`,
+              StatusF:`${selectedStatus}`,
+              order:`${order === '' ? 'desc' : order}`,
+              orderBy:`${orderBy === '' ? 'Date' : orderBy}`,
+              // orderProm:`${orderProm}`,
+            }
+          ]
+          const jsonConvert = btoa((JSON.stringify(Farr)));
+          
+          const printMainUrl = `${PrintUrl}&Farr=${jsonConvert}`;
+          
+          const form = document.createElement('form');
+          form.setAttribute('method', 'post');
+          form.setAttribute('action', `${PrintUrl}`);
+          form.setAttribute('target', '_blank'); // Opens in a new tab
+        
+          const dataInput = document.createElement('input');
+          dataInput.setAttribute('type', 'hidden');
+          dataInput.setAttribute('name', 'Farr');
+          dataInput.setAttribute('value', jsonConvert);
+          form.appendChild(dataInput);
+        
+          document.body.appendChild(form);
+          
+          // Debugging - log the form HTML to see if everything looks correct
+          // console.log(form.outerHTML);
+        
+          // Submit the form
+          form.submit();
+    
+
+      // }
+      // else{
+      //   setPrintJobError('Please select any one job for print');
+      // }
+
+  }
+
+  // // working code 11-05-2024
+  // const handleCheckboxChange = (event, rowIndex, row) => {
+  //   console.log(event?.target?.checked);
+  //   // const newData = [...filterData]; // Make a copy of the data array
+  //   // newData[rowIndex].isJobSelected = event.target.checked; // Update isJobSelected property
+  //   // setFilterData(newData); // Update state with the modified data
+  //   console.log(event, rowIndex, row);
+  //    const newData = filterData.map((row, index) => {
+  //   if (index === (page * rowsPerPage + rowIndex)) {
+  //     let obj = {...row};
+  //     obj.isJobSelected = event?.target?.checked;
+  //     row = obj;
+  //     return row;
+  //     // return obj
+  //     // return {
+  //     //   ...row,
+  //     //   isJobSelected: (event.target.checked ? false : true),
+  //     // };
+  //   }else{
+  //     return row;
+  //   }
+  // });
+
+  // setFilterData(newData);
+
+
+  // };
+  // // working code 11-05-2024
+  // const handleMasterCheckboxChange = (event) => {
+  //   const isChecked = event.target.checked;
+  
+  //   // const newData = filterData.map((row, index) => ({
+  //   //   ...row,
+  //   //   isJobSelected: (isChecked && index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) || row.isJobSelected,
+  //   // }));
+  //   // const newData = filterData.map((row, index) => ({
+  //   //   ...row,
+  //   //   isJobSelected: (isChecked && index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) || row.isJobSelected,
+  //   // }));
+  
+  //   // setFilterData(newData);
+  //   // setAllChecked(isChecked);
+  //   // const isChecked = event.target.checked;
+  //   // setAllChecked(isChecked);
+  //   // const newData = filterData.map((row) => ({
+  //   //   ...row,
+  //   //   isJobSelected: isChecked,
+  //   // }));
+  //   // setFilterData(isChecked ? [...newData] : []);
+    
+  //   setAllChecked(isChecked);
+  
+  //   const newData = filterData.map((row, index) => {
+  //     if (index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) {
+  //       return {
+  //         ...row,
+  //         isJobSelected: isChecked,
+  //       };
+  //     }
+  //     return row;
+  //   });
+  
+  //   setFilterData(newData);
+  // };
+
+  // const handleMasterCheckboxChange = (event) => {
+  //   const isChecked = event.target.checked;
+  //   setAllChecked(isChecked);
+    
+  //   const startIndex = page * rowsPerPage;
+  //   const endIndex = Math.min((page + 1) * rowsPerPage, filterData.length);
+    
+  //   // const newData = filterData.map((row, index) => ({
+  //   //   ...row,
+  //   //   isJobSelected: (index >= startIndex && index < endIndex) ? isChecked : row.isJobSelected,
+  //   // }));
+    
+
+  // const newData = filterData.map((row, index) => ({
+  //   ...row,
+  //   isJobSelected: (page * rowsPerPage <= index && index < (page + 1) * rowsPerPage) ? isChecked : row.isJobSelected,
+  // }));
+
+  // setFilterData(newData);
+  // setAllChecked(isChecked);
+    
+  //   // setFilterData(newData);
+  // };
+
+
+
+  
+
+
+
+  // const handleCheckboxChange = (event, index) => {
+  //   const newState = [...checkboxState];
+  //   newState[index] = event.target.checked;
+  //   setCheckboxState(newState);
+  // };
+  
+
+  // const handleMasterCheckboxChange = (event) => {
+  //   const isChecked = event.target.checked;
+  //   setAllChecked(isChecked);
+  //   // Update checkbox state for current page
+  //   setCheckboxState((prev) => prev.map(() => isChecked));
+  // };
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+    
+  };
+
+ // Inside handleMasterCheckboxChange function
+// Inside handleMasterCheckboxChange function
+const handleMasterCheckboxChange = (event) => {
+
+  // setOrder(isAsc ? 'desc' : 'asc');
+  
+  const sortedData = stableSort(data, getComparator(order, orderBy));
+  setData(sortedData); // Update the data array with sorted data
+
+  // Update the filterData array with the sorted data
+  const sortedFilterData = stableSort(filterData, getComparator(order, orderBy));
+  
+  setFilterData(sortedFilterData);
+
+
+
+  const isChecked = event.target.checked;
+  setAllChecked(isChecked);
+
+  // Update the isJobSelected property for all rows in the current page of sortedData array
+  const newData = sortedFilterData?.map((row, index) => {
+    if (index >= page * rowsPerPage && index < (page + 1) * rowsPerPage) {
+      return {
+        ...row,
+        isJobSelected: isChecked,
+      };
+    }
+    return row;
+  });
+  setFilterData(newData);
+};
+
+// Inside handleCheckboxChange function
+const handleCheckboxChange = (event, rowIndex) => {
+
+  const sortedData = stableSort(data, getComparator(order, orderBy));
+  setData(sortedData); // Update the data array with sorted data
+
+  // Update the filterData array with the sorted data
+  const sortedFilterData = stableSort(filterData, getComparator(order, orderBy));
+  
+  setFilterData(sortedFilterData);
+
+  const newData = sortedFilterData?.map((row, index) => {
+    if (index === page * rowsPerPage + rowIndex) {
+      return {
+        ...row,
+        isJobSelected: event.target.checked,
+      };
+    }
+    return row;
+  });
+
+  setFilterData(newData);
+};
+
+
+const scrollToTop = () => {
+  // Find the table container element and set its scrollTop property to 0
+  const tableContainer = document.querySelector('.quotationJobSec');
+  if (tableContainer) {
+    tableContainer.scrollTop = 0;
+  }
+};
+
   return (
     <Box className='smilingSavedAddressMain quotationFiltersText' sx={{ padding: "20px", }}>
       <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -579,7 +988,7 @@ const QuotationJob = () => {
             sx={{ display: "flex", alignItems: "center", flexDirection: "unset" }}
           >
             <FormControlLabel value="order" className='orderFrom QuotationJobAllBtnSecDate' control={<Radio />} label="Order Date" sx={{ padding: "0 20px 35px 0", marginRight: "0" }} />
-            <FormControlLabel value="prom" className='orderFrom QuotationJobAllBtnSecDate' control={<Radio />} label="From. Date" sx={{ padding: "0 10px 35px 0", marginRight: "0" }} />
+            <FormControlLabel value="prom" className='orderFrom QuotationJobAllBtnSecDate' control={<Radio />} label="Promise Date" sx={{ padding: "0 10px 35px 0", marginRight: "0" }} />
           </RadioGroup>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -652,9 +1061,82 @@ const QuotationJob = () => {
         <Box sx={{ padding: "0 15px 35px 0", }} className="QuotationJobAllBtnSec">
           <Button variant='contained' className='muiSmilingRocksBtn' sx={{ padding: "7px 10px", minWidth: "max-content", background: "#7d7f85" }} onClick={(eve) => handleSearch(eve, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm)}><SearchIcon sx={{ color: "#fff !important" }} /></Button>
         </Box>
-        <Box sx={{ position: "relative", padding: "0 15px 35px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
-          <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-16px", }}>Status</label>
-          <Select
+        <Box sx={{ position: "relative", padding: "0 15px 40px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
+        <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-8px", }}>Status</label>
+          {/* <FormControl sx={{ m: 1, width: 300 }}>
+        <InputLabel id="demo-multiple-name-label">ALL</InputLabel>
+        <Select
+          labelId="demo-multiple-name-label"
+          id="demo-multiple-name"
+          multiple
+          value={selectedStatus} // Assuming selectedStatus is an array of selected values
+          onChange={handleStatus} // Assuming handleStatus function receives selected values
+          input={<OutlinedInput  />}
+          MenuProps={MenuProps}
+          // label='ALL'
+          className='statusSelect'
+          size='small'
+          style={{width:'50%'}}
+          renderValue={(selected) => (
+            <div>
+              {selected?.map((value) => (
+                <div></div>
+                // <Chip key={value} label={value} />
+              ))}
+            </div>
+          )}
+        >
+          {statusList?.map((status) => (
+                <MenuItem key={status.id} value={status.value}>
+                  <Checkbox checked={selectedStatus?.indexOf(status.value) > -1} />
+                  <ListItemText primary={status.label} />
+                </MenuItem>
+              ))}
+        </Select>
+          </FormControl> */}
+          
+              <Select
+                labelId="demo-multiple-checkbox-label"
+                id="demo-multiple-checkbox"
+                multiple
+                value={selectedStatus} // Assuming selectedStatus is an array of selected values
+                onChange={handleStatus} // Assuming handleStatus function receives selected values
+                MenuProps={MenuProps}
+                input={<OutlinedInput  />}
+                style={{minHeight:'2.9375em'}}
+                className='statusSelect'
+                size='small'
+                label='ALL'
+                renderValue={(selected) => {
+                  if (selected.length === 0) {
+                    return <em style={{color:'black'}}>Placeholder</em>;
+                  }
+      
+                  return '';
+                }}
+                inputProps={{
+                  placeholder: 'Placeholder', // Set placeholder directly on the inputProps
+              }}
+                // renderValue={(selected) => (
+                //   <div>
+                    
+                //     { selected?.length === 0 ? <div>Placeholder</div> : selected?.map((value) => (
+                //       <div></div>
+                //       // <Chip key={value} label={value} />
+                //     ))}
+                //   </div>
+                // )}
+              
+              >
+                
+              {statusList?.map((status) => (
+                <MenuItem key={status.id} value={status.value}>
+                  <Checkbox checked={selectedStatus?.indexOf(status.value) > -1} />
+                  <ListItemText primary={status.label} />
+                </MenuItem>
+              ))}
+            </Select>
+          {/* <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={statuse}
@@ -667,18 +1149,11 @@ const QuotationJob = () => {
                 return <MenuItem value={e?.value} key={i}>{e?.label}</MenuItem>
               })
             }
-          </Select>
+          </Select> */}
         </Box>
         <Box sx={{ position: "relative", padding: "0 15px 35px 0", display: "flex", flexWrap: "wrap", alignitems: "center", justifyContent: "center" }} className="QuotationJobAllBtnSec" >
           <label className='lh-1 selectLabel' style={{ marginTop: "-3px", position: "absolute", left: 0, top: "-16px", }}>Category</label>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            className='categoryList'
-            value={category}
-            label="Status"
-            onChange={handleCategory}
-          >
+          <Select labelId="demo-simple-select-label" id="demo-simple-select" className='categoryList' value={category} label="Status" onChange={handleCategory} >
             {
               categoryList?.map((e, i) => {
                 return <MenuItem value={e?.value} key={i}>{e?.label}</MenuItem>
@@ -726,10 +1201,14 @@ const QuotationJob = () => {
         <Box sx={{ display: "flex", alignItems: "center", position: "relative", padding: "0 15px 35px 0", maxWidth: "max-content" }} className="searchbox QuotationJobAllBtnSec">
           <TextField id="standard-basic" label="Search" variant="outlined" value={searchVal} onChange={eve => {
             setSearchVal(eve?.target?.value);
+            setPage(0);
             handleSearch(eve, eve?.target?.value, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm);
           }} />
           <Button sx={{ padding: 0, maxWidth: "max-content", minWidth: "max-content", position: "absolute", right: "20px", color: "#757575" }}
             onClick={eve => handleSearch(eve, searchVal, fromDate, toDate, metalPurity, MetalColor, category, statuse, orderProm)}><SearchIcon /></Button>
+        </Box>
+        <Box sx={{ padding: "0 0px 40px 0", }} className="QuotationJobAllBtnSec">
+          <Button variant='contained' className='muiSmilingRocksBtn' sx={{ padding: "7px 10px", minWidth: "max-content", background: "#7d7f85" }} onClick={(eve) => handlePrintJobs(filterData, data)}><PrintIcon sx={{ color: "#fff !important" }} /></Button>
         </Box>
       </Box>
 
@@ -740,17 +1219,23 @@ const QuotationJob = () => {
               <Table stickyHeader aria-label="sticky table" className='quotaionFiltertable'>
                 <TableHead>
                   <TableRow>
-                    {columns.map((column) => (
+                  <TableCell style={{backgroundColor: "#ebebeb", color: "#6f6f6f"}}>
+                    <Checkbox
+                      checked={allChecked}
+                      onChange={handleMasterCheckboxChange}
+                    />
+                  </TableCell>  
+                    {columns?.slice(1)?.map((column) => (
                       <TableCell
-                        key={column.id}
+                        key={column?.id}
                         align={column.align}
                         style={{ minWidth: column.minWidth, backgroundColor: "#ebebeb", color: "#6f6f6f", }}
-                        onClick={() => handleRequestSort(column.id)}
+                        onClick={() => handleRequestSort(column?.id)}
                       >
                         {column.label}
                         {orderBy === column.id ? (
-                          <span style={{ display: 'flex', alignItems: 'center' }}>
-                            {orderBy === column.id && (<CustomSortIcon order={order} />)}
+                          <span style={{ display: 'flex', alignItems: 'right' }}>
+                            {orderBy === column?.id && (<CustomSortIcon order={order} />)}
                           </span>
                         ) : null}
                       </TableCell>
@@ -758,39 +1243,38 @@ const QuotationJob = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* {stableSort(filterData, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                          {columns.map((column) => {
-                            const value = row[column.id];
-                            return (
-                              <TableCell key={column.id} align={column.align}>
-                                {column.format && typeof value === 'number'
-                                  ? column.format(value)
-                                  : value}
-                              </TableCell>
-                            );
-                          })}
-                        </TableRow>
-                      );
-                    })} */}
+           
 
                   {stableSort(filterData, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, rowIndex) => {
+                    ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    ?.map((row, rowIndex) => {
                       let serialNumber = page * rowsPerPage + rowIndex + 1;
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                           {columns.map((column, index) => {
-                            const value = row[column.id];
+                            const value = row[column?.id];
                             return (
-                              <TableCell key={column.id} align={column.align}>
-                                {column.id === 'Sr#' ? serialNumber : column.format && typeof value === 'number'
-                                  ? column.format(value)
-                                  : value}
-                              </TableCell>
+                              <TableCell key={column?.id} align={column?.align}>
+                              {column.id === 'Sr#' ? serialNumber : 
+                                column?.id === 'checkbox' ? 
+                                // <Checkbox
+                                //     checked={checkboxState[page * rowsPerPage + rowIndex]}
+                                //     onChange={(event) => handleCheckboxChange(event, page * rowsPerPage + rowIndex)}
+                                //   />
+                                  <Checkbox 
+                                    checked={row?.isJobSelected} 
+                                    onChange={(event) => handleCheckboxChange(event, rowIndex, row)} 
+                                  /> 
+                                  : 
+                                  column?.format && typeof value === 'number'
+                                    ? column.format(value)
+                                    : column?.id === 'FinalAmount' ? formatAmount(value) : value}
+                            </TableCell>
+                              // <TableCell key={column?.id} align={column?.align}>
+                              //   {column.id === 'Sr#' ? serialNumber : column?.format && typeof value === 'number'
+                              //     ? column.format(value)
+                              //     : value}
+                              // </TableCell>
                             );
                           })}
                         </TableRow>

@@ -27,17 +27,19 @@ import SearchIcon from '@mui/icons-material/Search';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Label } from "@mui/icons-material";
-import { checkMonth } from "../../../../Utils/globalFunctions/GlobalFunction";
+import { checkMonth, formatAmount } from "../../../../Utils/globalFunctions/GlobalFunction";
 import moment from "moment";
 import { CommonAPI } from "../../../../Utils/API/CommonAPI";
 import Swal from 'sweetalert2';
-const createData = (SrNo, Date, StockDocumentNo, TotalDesign, Amount) => {
+import PrintIcon from '@mui/icons-material/Print';
+const createData = (SrNo, Date, StockDocumentNo, TotalDesign, Amount, PrintUrl) => {
     return {
         SrNo,
         Date,
         StockDocumentNo,
         TotalDesign,
-        Amount
+        Amount,
+        PrintUrl
     };
 }
 
@@ -74,8 +76,12 @@ const descendingComparator = (a, b, orderBy) => {
         }
         return 0;
     } else if (orderBy === 'SrNo' || orderBy === 'Amount') {
-        return a[orderBy] - b[orderBy];
-    } else {
+        // return a[orderBy] - b[orderBy];
+        return b[orderBy] - a[orderBy];
+    } else if ((orderBy === 'StockDocumentNo') ) {
+        // Handle sorting for SKU# column
+        return customComparator_Col(a[orderBy], b[orderBy]);
+    }  else {
         const valueA = typeof a[orderBy] === 'string' ? a[orderBy].toLowerCase() : a[orderBy];
         const valueB = typeof b[orderBy] === 'string' ? b[orderBy].toLowerCase() : b[orderBy];
 
@@ -88,7 +94,17 @@ const descendingComparator = (a, b, orderBy) => {
         return 0;
     }
 }
-
+const customComparator_Col = (a, b) => {
+    const regex = /([^\d]+)(\d+)/;
+    const [, wordA, numA] = a?.match(regex);
+    const [, wordB, numB] = b?.match(regex);
+    
+    if (wordA !== wordB) {
+        return wordA?.localeCompare(wordB);
+    }
+    
+    return parseInt(numB, 10) - parseInt(numA, 10);
+  };
 const getComparator = (order, orderBy) => {
     return order === 'desc'
         ? (a, b) => descendingComparator(a, b, orderBy)
@@ -135,6 +151,13 @@ const headCells = [
         disablePadding: false,
         label: 'Total Amount',
         align: "right"
+    },
+    {
+        id: 'Print',
+        numeric: true,
+        disablePadding: false,
+        label: 'Print',
+        align: "center"
     },
 ];
 
@@ -200,8 +223,13 @@ const Sales = () => {
     const toDateRef = useRef(null);
 
     const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
+        let isAsc = ((orderBy === property) && (order === 'asc'));
+        if(isAsc){
+          setOrder('desc');
+        }else{
+          setOrder('asc');
+        }
+        // setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
@@ -226,11 +254,13 @@ const Sales = () => {
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
+        scrollToTop();
     };
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
+        scrollToTop();
     };
 
     const emptyRows =
@@ -254,6 +284,7 @@ const Sales = () => {
     }
 
     const handleSearch = (eve, searchValue, fromDatess, todatess) => {
+        setPage(0);
         let fromdates = `${fromDatess?.["$y"]}-${checkMonth(fromDatess?.["$M"])}-${fromDatess?.["$D"]}`;
         let todates = `${todatess?.["$y"]}-${checkMonth(todatess?.["$M"])}-${todatess?.["$D"]}`;
 
@@ -290,7 +321,6 @@ const Sales = () => {
                     let todat = moment(todates);
                     let cutDat = moment(cutDate);
                     if(moment(fromdat).isSameOrBefore(todat)){
-                        console.log("in if");
                         const isBetween = cutDat.isBetween(fromdat, todat, null, '[]');
                         if (isBetween || cutDat.isSame(fromdat) || cutDat.isSame(todat)) {
                             flags.dateTo = true;
@@ -377,7 +407,8 @@ const Sales = () => {
             if (response.Data?.rd) {
                 let rows = [];
                 response?.Data?.rd?.forEach((e, i) => {
-                    let dataa = createData(i + 1, e?.Date, e?.StockDocumentNo, e?.TotalDesign, e?.Amount);
+                    let printUrl = atob(e?.PrintUrl);
+                    let dataa = createData(i + 1, e?.Date, e?.StockDocumentNo, e?.TotalDesign, e?.Amount, printUrl);
                     rows?.push(dataa)
                 });
                 setData(rows);
@@ -404,6 +435,16 @@ const Sales = () => {
         }
     }, []);
 
+    const handlePrintUrl = (printUrl) => {
+        window.open(printUrl)
+    }
+    const scrollToTop = () => {
+        // Find the table container element and set its scrollTop property to 0
+        const tableContainer = document.querySelector('.quotationJobSec');
+        if (tableContainer) {
+          tableContainer.scrollTop = 0;
+        }
+      };
     return (
         <Box className='smilingSavedAddressMain salesApiSection' sx={{ padding: "20px", }}>
             <Box sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -490,7 +531,7 @@ const Sales = () => {
             </Box>
             {isLoading ?
                 <Box sx={{ display: "flex", justifyContent: "center", paddingTop: "10px" }}><CircularProgress className='loadingBarManage' /></Box> : <Paper sx={{ width: '100%', mb: 2 }} className="salesApiTable">
-                    <TableContainer className='salesPartTable'>
+                    <TableContainer className='salesPartTable quotationJobSec'>
                         <Table
                             sx={{ minWidth: 750, border: "1px solid rgba(224, 224, 224, 1)", }}
                             aria-labelledby="tableTitle"
@@ -521,19 +562,16 @@ const Sales = () => {
                                             // selected={isItemSelected}
                                             sx={{ cursor: 'pointer' }}
                                         >
-
-                                            <TableCell
-                                                component="td"
-                                                id={labelId}
-                                                scope="row"
-                                                padding="none"
-                                                align="center"
-                                            >
-                                                {index+1}
+                                            <TableCell component="td" id={labelId} scope="row" padding="none" align="center" > 
+                                            {page * rowsPerPage + index + 1}
+                                            {/* {index+1}  */}
                                             </TableCell>
                                             <TableCell align="center">{row.Date}</TableCell>
                                             <TableCell align="center">{row.StockDocumentNo}</TableCell>
-                                            <TableCell align="right">{row.Amount}</TableCell>
+                                            <TableCell align="right">{formatAmount(row?.Amount)}</TableCell>
+                                            <TableCell align="center"> <div onClick={() => handlePrintUrl(row?.PrintUrl)}>
+                                                            <PrintIcon   />
+                                                        </div></TableCell>
                                             {/* <TableCell align="right">{row.protein}</TableCell> */}
                                         </TableRow>
                                     );

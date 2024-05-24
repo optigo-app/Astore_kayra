@@ -9,6 +9,7 @@ export const CommonAPI = async (body) => {
     const storeInit = JSON.parse(localStorage.getItem('storeInit'));
     try {
         const { YearCode, version, token } = storeInit;
+
         const header = {
             Authorization: `Bearer ${token}`,
             Yearcode: YearCode,

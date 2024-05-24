@@ -21,6 +21,9 @@
 #demo-simple-select {
     padding: 5px 32px 9px 10px;
 }
+#demo-multiple-checkbox {
+    padding: 12px 32px 9px 10px;
+}
 
 #demo-simple-select~svg {
     top: 5px;
@@ -89,8 +92,12 @@
 .quotaionFiltertable th>span {
     position: absolute;
     top: 50%;
-    right: 0;
-    transform: translateY(-50%);
+    right: -6%;
+    transform: translate(-50%, -50%);
+    margin: 0px;
+    /* left: 50%; */
+    /* left: 53%; */
+    /* left: 33%; */
 }
 
 .quotaionFiltertable {
@@ -114,7 +121,23 @@
 .muiSmilingRocksBtn:hover svg {
     color: #7d7f85 !important;
 }
+/* .MuiSelect-select .MuiSelect-outlined .MuiSelect-multiple .MuiInputBase-input .MuiOutlinedInput-input .MuiInputBase-inputSizeSmall .css-jedpe8-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
+    min-height: 1.8375em !important;
+} */
 
+
+
+/* 
+.statusSelect{
+
+}
+.css-10nakn3-MuiModal-root-MuiPopover-root-MuiMenu-root{
+    position: absolute !important;
+    top: 0px !important;
+}
+.MuiBackdrop-root .MuiBackdrop-invisible .MuiModal-backdrop .css-g3hgs1-MuiBackdrop-root-MuiModal-backdrop{
+    position: absolute !important;
+} */
 @media(max-width: 768px) {
     .QuotationJobAllBtn  {
         margin-bottom: 20px !important;
