@@ -39,8 +39,10 @@ export default function Footer() {
                 </div>
                 <div className='footerMoreOption'>
                     <p className='footerMoreOptionData' onClick={() => { navigation('/contactUs'); window.scrollTo(0, 0); }}>CONTACT US</p>
-                    <p className='footerMoreOptionData' onClick={() => {navigation('/faq'); window.scrollTo(0, 0); }}>FAQ</p>
+                    {/* <p className='footerMoreOptionData' onClick={() => {navigation('/faq'); window.scrollTo(0, 0); }}>FAQ</p> */}
                     <p className='footerMoreOptionData' onClick={() => {navigation('/servicePolicy'); window.scrollTo(0, 0); }}>SERVICE POLICY</p>
+                    <p className='footerMoreOptionData' onClick={() => {navigation('/ExpertAdvice'); window.scrollTo(0, 0); }}>EXPERT ADVICE</p>
+                    <p className='footerMoreOptionData' onClick={() => {navigation('/FunFact'); window.scrollTo(0, 0); }}>FUN FACT</p>
                     {/* <p className='footerMoreOptionData' onClick={() => navigation('/press')}>PRESS</p> */}
                 </div>
                 <div className='footerMoreText'>
@@ -56,7 +58,7 @@ export default function Footer() {
                         fontSize: '12px',
                         fontWeight: 500,
                         cursor: 'pointer'
-                    }}>Terms & Privacy</p>
+                    }} onClick={() => navigation('/TermsPolicy')}>Terms & Privacy</p>
                 </div>
             </div>
                 {/* <div className='text-end me-3'>

@@ -84,7 +84,7 @@
 .smiWishLsitBoxImge {
     width: 100%;
     margin-top: 30px;
-
+    min-height: 210px;
 }
 
 .smiWishLsitBoxDesc1 {
@@ -157,6 +157,10 @@
     }
     .smiWishLsitBoxDesc1{
         margin: 0;
+    }
+
+    .smiWishLsitBoxImge{
+        margin-top: 0px!important;
     }
 }
 

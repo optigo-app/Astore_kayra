@@ -2154,7 +2154,8 @@ export default function CartPage() {
         // fullWidth
         // maxWidth={"xl"}
         fullScreen
-      >
+        className="DaiongCartMain"
+  >
         {!isLoading && (
           <div style={{ marginTop: "50px" }}>
             <div>

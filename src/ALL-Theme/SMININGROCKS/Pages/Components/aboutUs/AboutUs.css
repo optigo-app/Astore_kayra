@@ -98,6 +98,13 @@
         order: 1;
     }
 
+    .daimondsEveryAbout{
+        word-break: break-word!important;
+    }
+
+    .aboutMain{
+        padding-top: 40px!important;
+    }
 }
 
 @media screen and (max-width: 600px) {

@@ -132,4 +132,12 @@
         margin-top: 30px;
 
     }
+
+    .mapContact{
+        width: 100%!important;
+    }
+
+    .contactMain{
+        padding-top: 10px!important;
+    }
 }

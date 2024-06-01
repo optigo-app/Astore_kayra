@@ -69,8 +69,13 @@
     }
 
     .linkingTitle{
-        margin-top: 25px!important;
-        font-size: 22px!important;
+        margin: 5px 0px 0px 0px!important;
+        font-size: 20px!important;
+
+    }
+
+    .linkingShopCol{
+        margin: 0px;
     }
 
     .linkingShopCol{
@@ -88,7 +93,7 @@
 @media screen and (max-width: 500px) {
 
     .smilingBridesMain {
-        margin-top: 40px !important;
+        margin-top: 0px !important;
         border: none !important;
     }
     .smilingBrides{
@@ -103,7 +108,7 @@
 
     .smilingBridesMainTitle {
         font-size: 22px !important;
-        margin-top: 20px;
+        margin: 5px;
     }
 
 

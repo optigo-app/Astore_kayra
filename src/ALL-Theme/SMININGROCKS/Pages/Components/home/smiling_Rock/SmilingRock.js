@@ -3,7 +3,7 @@ import './SmilingRock.css'
 
 export default function SmilingRock() {
     return (
-        <div style={{ paddingBlock: '5%' }}>
+        <div style={{ paddingBlock: '5%' }} className='smilingPAgeMain'>
             <p className='smilingTitle'>The Kayra's Difference</p>
             <div className='smilingRock'>
                 <div className='smilingRockBox'>

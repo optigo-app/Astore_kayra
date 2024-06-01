@@ -107,7 +107,7 @@ const ProductList = () => {
   const [IsProdLoading, setIsProdLoading] = useState(false);
   const [currData, setCurrData] = useState()
   const [isFilterData, setIsFilterData] = useState(false)
-  const [rangeProData,setRangeProData]=useState([])
+  const [rangeProData, setRangeProData] = useState([])
 
   // console.log("alternativeData",newProData?.length?newProData:ProductApiData2);
 
@@ -161,7 +161,7 @@ const ProductList = () => {
     if (obj) {
       setCurrData(obj)
     }
-   
+
   }, [])
 
   let location = useLocation();
@@ -206,7 +206,7 @@ const ProductList = () => {
   // console.log("cartFlag",cartData,cartFlag)
   // console.log("wishFlag",WishData,wishFlag)
 
-  const WishListToCart = () =>{
+  const WishListToCart = () => {
     let findData = Object.keys(wishFlag).filter((wd) => Object.keys(cartFlag).find((cd) => wd === cd))
     // console.log("findData",findData)
     if (findData) {
@@ -384,7 +384,7 @@ const ProductList = () => {
   }
 
   useEffect(() => {
-    let searchData ;
+    let searchData;
     if (paramnameSetting(getnewMenuData.label) === "brand") {
       const data = ProductApiData2.filter((pd) => pd && pd.BrandName === paramdataSetting(getnewMenuData.label))
       if (data) {
@@ -418,11 +418,11 @@ const ProductList = () => {
       }
     }
 
-    if(searchData){
+    if (searchData) {
       // console.log("search",searchData);
-      setTimeout(()=>{
-        localStorage.setItem("searchdata",JSON.stringify(searchData))
-      },100)
+      setTimeout(() => {
+        localStorage.setItem("searchdata", JSON.stringify(searchData))
+      }, 100)
     }
   }, [getnewMenuData, ProductApiData2])
 
@@ -1036,7 +1036,7 @@ const ProductList = () => {
           // "UnitCost": `${product?.price === "Not Available" ? 0 : product?.price}`,
           "UnitCost": `${product?.price ?? 0}`,
           // "UnitCostWithmarkup": (`${(product?.price === "Not Available" ? 0 : product?.price) + (product?.markup ?? 0)}`),
-          "UnitCostWithmarkup": (`${PriceWithMarkupFunction(product?.markup,product?.price,currData?.CurrencyRate)}`),
+          "UnitCostWithmarkup": (`${PriceWithMarkupFunction(product?.markup, product?.price, currData?.CurrencyRate)}`),
           "autocode": `${product?.autocode}`,
           "colorstonecolorname": `${product?.colorstonecolorname}`,
           "colorstonequality": `${product?.colorstonequality}`,
@@ -1450,33 +1450,33 @@ const ProductList = () => {
   // }, [])
 
   useEffect(() => {
-    const priceOnly = (newProData.length ? newProData :ProductApiData2)?.filter(item => item?.price !== 'Not Available')
-    ?.map(item => item.price != 0 && item.price)?.sort((a, b) => a - b);
-      
-      // ?.map(item => item.price != 0 && item.price != '' ? item.price + item?.UnitCost : item.UnitCost)
-      
+    const priceOnly = (newProData.length ? newProData : ProductApiData2)?.filter(item => item?.price !== 'Not Available')
+      ?.map(item => item.price != 0 && item.price)?.sort((a, b) => a - b);
+
+    // ?.map(item => item.price != 0 && item.price != '' ? item.price + item?.UnitCost : item.UnitCost)
+
     setMinPrice(priceOnly[0]);
     setMaxPrice(priceOnly[priceOnly?.length - 1]);
     setValue1([priceOnly[0], priceOnly[priceOnly?.length - 1]])
     // const netWtOnly = ProductApiData2?.map((item) => item?.netwt).sort((a, b) => a - b);
-    const netWtOnly = (newProData.length ? newProData :ProductApiData2)?.map((item) => item?.updNWT).sort((a, b) => a - b);
+    const netWtOnly = (newProData.length ? newProData : ProductApiData2)?.map((item) => item?.updNWT).sort((a, b) => a - b);
     setMinNetwt(netWtOnly[0]);
     setMaxNetwt(netWtOnly[netWtOnly?.length - 1]);
     setValue2([netWtOnly[0], netWtOnly[netWtOnly?.length - 1]])
 
     // const grossWtOnly = ProductApiData2?.map((item) => item?.Grossweight).sort((a, b) => a - b);
-    const grossWtOnly = (newProData.length ? newProData :ProductApiData2)?.map((item) => item?.updGWT).sort((a, b) => a - b);
+    const grossWtOnly = (newProData.length ? newProData : ProductApiData2)?.map((item) => item?.updGWT).sort((a, b) => a - b);
     setMinGrossWt(grossWtOnly[0]);
     setMaxGrossWtt(grossWtOnly[grossWtOnly?.length - 1]);
     setValue3([grossWtOnly[0], grossWtOnly[grossWtOnly?.length - 1]])
-    
+
     // const diamondWtOnly = ProductApiData2?.map((item) => item?.diamondweight).sort((a, b) => a - b);
-    const diamondWtOnly = (newProData.length ? newProData :ProductApiData2)?.map((item) => item?.updDWT).sort((a, b) => a - b);
+    const diamondWtOnly = (newProData.length ? newProData : ProductApiData2)?.map((item) => item?.updDWT).sort((a, b) => a - b);
     setMinDiamondWt(diamondWtOnly[0]);
     setMaxDiamondWt(diamondWtOnly[diamondWtOnly?.length - 1]);
     setValue4([diamondWtOnly[0], diamondWtOnly[diamondWtOnly?.length - 1]])
 
-  }, [ProductApiData2,newProData]);
+  }, [ProductApiData2, newProData]);
 
   const handlePriceChange = (event, newValue, activeThumb) => {
     setValue1(newValue);
@@ -1577,7 +1577,7 @@ const ProductList = () => {
     const productAutoCode = product?.autocode;
     const productColorName = color;
     // console.log("color--", productColorName);
-    
+
     // console.log("colorWiseImageData--", colorWiseImageData);
 
     if (!colorWiseImageData) {
@@ -1586,10 +1586,10 @@ const ProductList = () => {
 
     if (data.IsColorWiseImages == 1) {
       const matchingData = colorWiseImageData.filter(imageDataItem => (
-        productAutoCode === imageDataItem.autocode && 
+        productAutoCode === imageDataItem.autocode &&
         productColorName.toLowerCase() === imageDataItem.colorname.toLowerCase()
       ));
-      
+
       // console.log('isAvailable---', matchingData);
 
       const checkAvailabilityPromises = matchingData.map(async (imageDataItem) => {
@@ -1832,12 +1832,12 @@ const ProductList = () => {
     if (pPrice <= 0) {
       return 0
     }
-    else if(pmu <=0){
+    else if (pmu <= 0) {
       return pPrice
     }
-    else{
-      let percentPMU = ((pmu/100) / curr)
-      return (Number(pPrice*(percentPMU ?? 0)) + Number(pPrice ?? 0))
+    else {
+      let percentPMU = ((pmu / 100) / curr)
+      return (Number(pPrice * (percentPMU ?? 0)) + Number(pPrice ?? 0))
     }
   }
 
@@ -1881,9 +1881,9 @@ const ProductList = () => {
               >
                 <ul className="d-flex" style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <li className="finejwelery me-4" id="finejwelery" style={{ fontSize: '14px' }}>Filters{newProData.length > 0 ? ` (${newProData.length}/${ProductApiData2?.length}) ` : null}</li>
-                  <li className="finejwelery" id="finejwelery" 
-                  onClick={() =>handlePageReload()} 
-                  style={{ cursor: 'pointer', fontSize: '14px' }}>
+                  <li className="finejwelery" id="finejwelery"
+                    onClick={() => handlePageReload()}
+                    style={{ cursor: 'pointer', fontSize: '14px' }}>
                     {
                       (Object.values(filterChecked)).filter(fc => fc.checked !== false).filter(fc => fc.checked !== undefined).length || newProData?.length > 0 ?
                         "Clear All"
@@ -2230,29 +2230,27 @@ const ProductList = () => {
                         >
                           {products?.TitleLine}
                         </p>
-                        <span style={{ fontWeight: 600, fontSize: "13px" }}>{`-${products?.designno}`} </span>
                       </div>
-                      <div style={{}}>
-                        <div className="mobileDeatilDiv1" style={{ display: 'flex', justifyContent: 'center', height: '20px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginInline: '5px' }}>
+                        <div className="mobileDeatilDiv1" >
                           {ismetalWShow === 1 &&
-                            <div>
-                              <p style={{ margin: '0px', fontSize: '13px' }}>NWT : <span style={{ fontWeight: 600, marginRight: '15px' }}>{products?.updNWT}</span></p>
+                            <div className="mobileShowAllDeatil">
+                              <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>NWT : <span style={{ fontWeight: 600, marginRight: '15px' }}>{products?.updNWT}</span></p>
                             </div>}
-                          {isGrossWShow === 1 && <div>
-                            <p style={{ margin: '0px', fontSize: '13px' }}>GWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{products?.updGWT}</span></p>
-                          </div>}
-                        </div>
-                        <div className="mobileDeatilDiv2" style={{ display: 'flex', justifyContent: 'center', height: '20px' }}>
-                          {((isDaaimongWShow || isDaaimongWShow) === 1 && (products?.diamondweight !== 0 || products?.diamondpcs !== 0)) && <div>
-                            <p style={{ margin: '0px', fontSize: '13px' }}>DWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{(isDaaimongWShow === 1 && products?.diamondweight !== 0) && products?.updDWT + '/'}  {(isDaaimonPShow === 1 && products?.diamondpcs !== 0) && products?.updDPCS}</span></p>
+                          {isGrossWShow === 1 && <div className="mobileShowAllDeatil">
+                            <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>GWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{products?.updGWT}</span></p>
                           </div>}
 
-                          {((isStoneWShow || isStonePShow) === 1 && (products?.totalcolorstoneweight !== 0 || products?.totalcolorstonepcs !== 0)) && <div>
-                            <p style={{ margin: '0px', fontSize: '13px' }}>CWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{(isStoneWShow === 1 && products?.totalcolorstoneweight !== 0) && products?.updCWT + '/'}  {(isStonePShow === 1 && products?.totalcolorstonepcs !== 0) && products?.updCPCS}</span></p>
+                          {((isDaaimongWShow || isDaaimongWShow) === 1 && (products?.diamondweight !== 0 || products?.diamondpcs !== 0)) && <div className="mobileShowAllDeatil">
+                            <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>DWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{(isDaaimongWShow === 1 && products?.diamondweight !== 0) && products?.updDWT + '/'}  {(isDaaimonPShow === 1 && products?.diamondpcs !== 0) && products?.updDPCS}</span></p>
+                          </div>}
+
+                          {((isStoneWShow || isStonePShow) === 1 && (products?.totalcolorstoneweight !== 0 || products?.totalcolorstonepcs !== 0)) && <div className="mobileShowAllDeatil">
+                            <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>CWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{(isStoneWShow === 1 && products?.totalcolorstoneweight !== 0) && products?.updCWT + '/'}  {(isStonePShow === 1 && products?.totalcolorstonepcs !== 0) && products?.updCPCS}</span></p>
                           </div>}
                         </div>
-
                         <div>
+                          <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px', display: 'flex' }}>{products?.designno}</p>
                           <p style={{ fontSize: "14px", fontWeight: 'bold', display: 'flex', justifyContent: 'center' }}>
                             {isMetalTCShow === 1 && <span>
                               {/* {products?.MetalTypeName} - */}

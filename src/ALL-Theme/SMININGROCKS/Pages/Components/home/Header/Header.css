@@ -124,6 +124,7 @@
     z-index: 1;
     height: 30px;
     margin-inline: 6%;
+    width: 100%;
 }
 
 .nav-ul-shop {
@@ -146,7 +147,7 @@
     text-transform: uppercase;
     color: #7d7f85;
     font-size: 13px;
-    margin-left: -2em;
+    margin: 0px 0px  0px -30px;
 }
 
 .nav-li-shop {
@@ -226,10 +227,10 @@
 .Smining-Top-Header-fixed-main {
     width: 100%;
     background-color: white;
-    padding: 20px 0;
+    display: flex;
+    align-items: center;
     text-align: center;
     transform: translateY(-200px);
-    /* transition: all 0.1s ease; */
     height: 60px;
 }
 
@@ -573,13 +574,14 @@
     margin-top: 40% !important;
 }
 
-.menuImages{
+.menuImages {
     height: 250px;
     width: 300px;
     object-fit: cover;
 }
-@media (max-width:1640px){
-    .menuImages{
+
+@media (max-width:1640px) {
+    .menuImages {
         height: 200px;
         width: 180px;
         object-fit: cover;
@@ -597,18 +599,31 @@
 
     .Smining-Top-Header-fixed {
         margin-inline: 10px !important;
+        width: 100%!important;
     }
 
+    .smilingMobileSubDiv {
+        padding: 0px 15px 0px 15px !important;
+        height: 100%!important;
+    }
+
+    .MainlogogMobileImage{
+        width: 60%!important;
+    }
     .mobileHeaderSmining {
         display: block !important;
         background-color: rgb(192, 187, 177) !important;
-        height: 90px !important;
+        height: 70px !important;
     }
 
     .placeOrderBtn {
         width: 100% !important;
     }
 
+    .MainlogogMobileImageATag{
+        display: flex;
+        justify-content: center;
+    }
     .sminingHeaderWeb {
         display: none;
     }
@@ -725,10 +740,7 @@
         width: 95% !important;
     }
 
-    .smilingMobileSubDiv {
-        padding-top: 15px !important;
-        padding-inline: 15px !important;
-    }
+
 
     .Smining-Top-Header-fixed {
         margin-inline: 0px !important;
@@ -759,10 +771,6 @@
         width: 120% !important;
     }
 
-    .MainlogogMobileImage {
-        width: 76% !important;
-        /* margin-top:-11px */
-    }
 }
 
 @media screen and (max-width:1300px) {
@@ -872,9 +880,9 @@
     border-radius: 10px;
 }
 
- .smilingCartTab1Main {
-    min-width: max-content!important;
-    width: max-content!important;
+.smilingCartTab1Main {
+    min-width: max-content !important;
+    width: max-content !important;
 
 }
 

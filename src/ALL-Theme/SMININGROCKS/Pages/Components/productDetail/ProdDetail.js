@@ -2147,7 +2147,7 @@ const ProdDetail = () => {
                         {/* {i !== 0 && <hr style={{opacity:0.06}}/>} */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
                           <div >
-                            <img src={!(dsl?.ThumbImagePath) ? notFound : dsl?.imagepath + dsl?.ThumbImagePath.split(",")[0]} alt={""} style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+                            <img src={!(dsl?.ThumbImagePath) ? notFound : globImagePath + dsl?.ThumbImagePath.split(",")[0]} alt={""} style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', position: 'relative', height: '100px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>

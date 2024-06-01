@@ -8,10 +8,12 @@ export default function ServicePolicy() {
         <div style={{
             backgroundColor: '#aab4b7',
             paddingTop: '110px'
-        }}>
+        }}
+         className='searvicemobileMain'
+         >
             <div>
-                <div style={{ paddingBlock: '60px' }}>
-                    <p style={{ fontSize: '40px', color: 'white', textAlign: 'center', fontFamily: 'FreightDispProBook-Regular,Times New Roman,serif' }}>SERVICE POLICY</p>
+                <div  className='serviceTitle' style={{ paddingBlock: '60px' }}>
+                    <p className='servicesTitleText' style={{ fontSize: '40px', color: 'white', textAlign: 'center', fontFamily: 'FreightDispProBook-Regular,Times New Roman,serif' }}>SERVICE POLICY</p>
                 </div>
                 <div className='smiling-ServicePolicyMain'>
                     <div className='smiling-ServiPolicySubMain'>

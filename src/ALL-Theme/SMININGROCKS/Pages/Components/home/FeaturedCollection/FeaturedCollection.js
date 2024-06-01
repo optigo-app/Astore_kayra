@@ -57,13 +57,12 @@ export default function FeaturedCollection() {
         <div>
             <div className='linkingLoveMain'>
                 <div className='linkingLove'>
-                    <p className='linkingTitle'>SHINING WITH LOVE</p>
+                    <p className='linkingTitle'>LINKING LOVE</p>
                     <p className='linkingDesc'>Ready to share link with your loved ones!</p>
                     <p className='linkingShopCol'>SHOP COLLECTION</p>
                     <Slider {...settings} >
                         <div className='linkRingLove'>
-
-                            <div>
+                            <div className='linkRingLoveSubMain'>
                                 <div className='linkLoveRing1'>
                                     <img src={!ring1ImageChange ? `${storImagePath()}/images/HomePage/Promo/Set/1/promoSetBanner1Img1.png`:`${storImagePath()}/images/HomePage/Promo/Set/1/promoSetBanner1Img1Hover.png`} className='likingLoveImages' onMouseEnter={handleMouseEnterRing1} onMouseLeave={handleMouseLeaveRing1} />
                                 </div>
@@ -71,7 +70,7 @@ export default function FeaturedCollection() {
                                     <p className='ring1Desc'>Lab Grown Diamond 1.97ctw Chain Linking Bracelet BL-01993WHT</p>
                                 </div>
                             </div>
-                            <div>
+                            <div className='linkRingLoveSubMain'>
                                 <div className='linkLoveRing2'>
                                     <img src={!ring2ImageChange ? `${storImagePath()}/images/HomePage/Promo/Set/1/promoSetBanner1Img2.png`:`${storImagePath()}/images/HomePage/Promo/Set/1/promoSetBanner1Img2Hover.png`} className='likingLoveImages' onMouseEnter={handleMouseEnterRing2} onMouseLeave={handleMouseLeaveRing2} />
                                 </div>
@@ -128,12 +127,12 @@ export default function FeaturedCollection() {
             </div>
 
 
-            <div className='linkingLoveMain'>
+            <div className='linkingLoveMain linkingLoveMain2'>
                 <div className='linkingLoveImage'>
                     <img src={`${storImagePath()}/images/HomePage/Promo/Set/2/promoSetMainBanner2.jpg`} className='linkingLoveImageDesign' />
                 </div>
                 <div className='linkingLove'>
-                    <p className='linkingTitle'>Blossom</p>
+                    <p className='linkingTitle'>FLORA</p>
                     <p className='linkingDesc'>High end affordable luxury with sophisticated designs for your every day.</p>
                     <p className='linkingShopCol'>SHOP COLLECTION</p>
                     <Slider {...settings} >

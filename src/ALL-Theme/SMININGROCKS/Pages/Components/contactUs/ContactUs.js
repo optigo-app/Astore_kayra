@@ -95,7 +95,9 @@ export default function ContactUs() {
         <div style={{
             backgroundColor: '#c0bbb1',
             paddingTop: '110px'
-        }}>
+        }}
+        className='contactMain'
+        >
             <div>
                 <div style={{ marginBlock: '20px' }}>
                     <p style={{ fontSize: '40px', color: 'white', textAlign: 'center', fontFamily: 'FreightDispProBook-Regular,Times New Roman,serif' }}>Contact Us</p>
@@ -271,7 +273,9 @@ export default function ContactUs() {
                                             height="450"
                                             allowfullscreen=""
                                             loading="lazy"
-                                            referrerpolicy="no-referrer-when-downgrade">
+                                            referrerpolicy="no-referrer-when-downgrade"
+                                            className='mapContact'
+                                            >
 
                                         </iframe>
                                     </div>

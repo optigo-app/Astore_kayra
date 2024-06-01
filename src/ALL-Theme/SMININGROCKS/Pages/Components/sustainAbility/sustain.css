@@ -23,7 +23,20 @@
         padding: 0px;
     }
     .sustaionMainTitle{
-        font-size: 25px!important;
+        font-size: 22px!important;
+        margin: 0px;
+    }
+    .sustaionMainTitleDesc{
+        font-size: 11px!important;
+        margin: 0px;
+    }
+    .sustainBoxImageBoxMain{
+        width: 50%;
+        padding: 0px!important;
+    }
+
+    .sustainBoxImageBoxMainDiv{
+        gap: 3px!important;
     }
 }
 

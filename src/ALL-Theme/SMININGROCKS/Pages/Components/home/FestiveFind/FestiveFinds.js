@@ -25,9 +25,9 @@ export default function FestiveFinds() {
                     <p className='smilingFestiMainTitle3' style={{ color: 'gray', margin: '0px', fontSize: '13px' }}>
                         Explore your jewelry for upcoming holiday!
                     </p>
-                    <div>
+                    {/* <div>
                         <button className='DiscoverBtn' onClick={handleNaviagtion}>DISCOVER MORE</button>
-                    </div>
+                    </div> */}
                 </div>}
             </div>
         </div>

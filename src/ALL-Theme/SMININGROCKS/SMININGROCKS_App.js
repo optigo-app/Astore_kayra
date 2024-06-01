@@ -12,6 +12,8 @@ import ServicePolicy from './Pages/Components/ServicePolicy/ServicePolicy'
 import MyWishList from './Pages/Components/myWishList/MyWishList'
 import Lookbook from './Pages/Components/Lookbook/index'
 import Press from './Pages/Components/press/Press'
+import ExpertAdvice from './Pages/Components/ExpertAdvice/ExpertAdvice'
+import FunFact from './Pages/Components/FunFact/FunFact'
 import Account from './Pages/Components/account/Account'
 import SearchResult from './Pages/Components/searchResult/SearchResult'
 import Celeb from './Pages/Components/celebrity/Celeb'
@@ -45,6 +47,7 @@ import CurrentVersion from "./Pages/Components/ProjectVersion/CurrentVersion"
 // import OrderHistory from './Pages/Components/account/accountOrderHistory/OrderHistory';
 import { ToastContainer } from 'react-toastify';
 import PrivateRoutes from './PrivateRoute';
+import TermsPolicy from './Pages/Components/TermPolicy/TermsPolicy'
 
 // export default function SMININGROCKS_App() {
 
@@ -170,6 +173,9 @@ export default function SMININGROCKS_App() {
                         {/* <Route path="/myWishList" element={<MyWishList />} /> */}
                         <Route path="/lookbook" element={<Lookbook />} />
                         <Route path="/press" element={<Press />} />
+                        <Route path="/ExpertAdvice" element={<ExpertAdvice />} />
+                        <Route path="/FunFact" element={<FunFact />} />
+                        <Route path="/TermsPolicy" element={<TermsPolicy />} />
                         {/* <Route path="/account" element={<Account />} />
                         <Route path="/accountledger" element={<AccountLedger />} />
                         <Route path="/accountledgertable" element={<AccountLedgerTable />} />

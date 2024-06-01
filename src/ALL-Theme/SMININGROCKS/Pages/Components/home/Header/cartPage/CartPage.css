@@ -20,6 +20,8 @@
 
 .smilingCartDeatilSub2 {
     width: 100%;
+    min-height: 300px;
+
 }
 
 .prodTitleLine {
@@ -43,6 +45,7 @@
 
 .cartImageShow {
     width: 100%;
+    min-height: 150px;
     border-bottom: 1px solid #e1e1e1;
 }
 
@@ -241,7 +244,7 @@
     font-size: 12px;
     color: #212529;
     font-weight: 500;
-    opacity: .8;
+    opacity: .4;
 }
 
 .ImageViewdesignNo {
@@ -369,6 +372,14 @@
 
     .cartProdSection .cartProdpart {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    .smilingCartPageMain{
+        margin: 0px 7px!important;
+    }
+
+    .listing-features{
+        margin-inline: 2px!important;
     }
 
     /* .popUpcontainer{
@@ -556,13 +567,16 @@
         margin: 0px 0px 0px 0px !important;
     }
 
+    .mainRenarkConatiner{
+        width: 300px!important;
+    }
     .totalpriceConatiner {
         width: 100% !important;
         margin: 0px 0px 0px 0px !important;
         padding-top: 10px;
     }
     .feature {
-        font-size: 12px !important;
+        font-size: 9px !important;
     }
 }
 
