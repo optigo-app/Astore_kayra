@@ -84,27 +84,31 @@
 
 @media screen and (max-width: 1700px) {
 
-    .linkingLoveImageDesign{
-        height: 100%!important;
-        width: 100%!important;
+    .linkingLoveImageDesign {
+        height: 100% !important;
+        width: 100% !important;
     }
 
 
-    .likingLoveImages{
-        height: 100%!important;
-        width: 100%!important;
+    .likingLoveImages {
+        /* height: 100% !important; */
+        width: 100% !important;
     }
 
 }
-    @media screen and (max-width: 1000px) {
+
+@media screen and (max-width: 1000px) {
 
     .linkingLoveMain {
         display: flex;
-        margin-top: 50px;
+        margin-top: 10px;
         flex-direction: column;
         margin-inline: 10px;
     }
 
+    .linkingLoveMain2{
+        margin-top: 30px;
+    }
     .linkingLove {
         width: 100%;
         order: 2;
@@ -120,14 +124,20 @@
         width: 100%;
         margin-top: 5px;
     }
-    .likingLoveImages{
+
+    .likingLoveImages {
         height: 250px;
+    }
+
+    .linkRingLoveSubMain{
+        height: 250px!important;
+        width: 50%!important;
     }
 }
 
 @media screen and (max-width: 420px) {
 
-    .likingLoveImages{
+    .likingLoveImages {
         height: 150px;
     }
 }

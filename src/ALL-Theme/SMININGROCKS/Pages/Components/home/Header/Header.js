@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import './Header.css'
 import Tooltip from '@mui/material/Tooltip';
 import { Badge, Dialog, Divider, Drawer, SwipeableDrawer, TextField } from "@mui/material";
@@ -18,7 +18,6 @@ import Cart from "./Cart";
 import titleImg from "../../../assets/KryaImagesVideo/Logo/KAYRA Final Logo.png";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { storImagePath } from "../../../../Utils/globalFunctions/GlobalFunction";
-import { toast } from "react-toastify";
 
 export default function Header() {
   const navigation = useNavigate();
@@ -410,28 +409,14 @@ export default function Header() {
     }
   };
 
-  let location = useLocation();
 
   const setGSearch = useSetRecoilState(searchData);
   function searchDataFucn(e) {
-    console.log('finalData--', location?.pathname === "/productpage");
     if (e.key === 'Enter') {
       let ProductApiData2 = JSON.parse(localStorage.getItem("allproductlist"));
-      let newProData = JSON.parse(localStorage.getItem("searchdata"));
-
-      // let finalData;
-      // if(location?.pathname == "/productpage"){
-      //   finalData = newProData?.length> 0 ? newProData :ProductApiData2
-      // }else{
-      //   finalData = ProductApiData2 
-      // }
-      let finalData = newProData?.length > 0 ? newProData : ProductApiData2
-
-      console.log('finalData--', finalData);
-
-      if (finalData) {
+      if (ProductApiData2) {
         let searchText = e.target.value.toLowerCase();
-        let data = finalData.filter((pd) => {
+        let data = ProductApiData2.filter((pd) => {
           for (const key in pd) {
             if (pd.hasOwnProperty(key) && pd[key]?.toString().toLowerCase().includes(searchText)) {
               return true;
@@ -439,40 +424,19 @@ export default function Header() {
           }
           return false;
         });
-
-        
         if (data.length > 0) {
-          console.log("data---------",data);
           setGSearch(data);
           navigation('/productpage');
           toggleOverlay();
         } else {
           setGSearch([]);
-          toggleOverlay();
         }
       } else {
-        // navigation('/productpage');
         setGSearch([]);
-        // navigation('/productpage');
-        toggleOverlay();
       }
     }
   }
 
-  // const setGSearch = useSetRecoilState(searchData);
-  // const searchDataFucn = (e) => {
-  //   if (e.key === 'Enter') {
-  //     let searchText = e.target.value.toLowerCase();
-  //     if (searchText) {
-  //       setGSearch(searchText);
-  //       // navigation('/productpage');
-  //       toggleOverlay();
-  //     } else {
-  //       setGSearch([]);
-  //       toast.info('No Product match')
-  //     }
-  //   }
-  // }
 
 
   function capitalizeText(text) {
@@ -739,9 +703,9 @@ export default function Header() {
                   </li>
                 </ul>
               </div>
-              <div onClick={() => { toggleDrawerOverlay(); navigation("/impact"); }}>
+              {/* <div onClick={() => { toggleDrawerOverlay(); navigation("/impact"); }}>
                 <p className="drawrTitle">IMPACT</p>
-              </div>
+              </div> */}
               <div onClick={() => { toggleDrawerOverlay(); navigation("/aboutUs"); }}>
                 <p className="drawrTitle">ABOUT US</p>
               </div>
@@ -950,11 +914,11 @@ export default function Header() {
                       </li>
                     </Tooltip>
                   </Badge>
-                  {location?.pathname === "/productpage"  && <li onClick={toggleOverlay} style={{}}>
+                  <li onClick={toggleOverlay} style={{}}>
                     <IoSearchOutline
                       style={{ height: "20px", cursor: "pointer", width: "20px" }}
                     />
-                  </li>}
+                  </li>
                   <Badge
                     badgeContent={getCartListCount}
                     max={1000}
@@ -1223,7 +1187,7 @@ export default function Header() {
                     </clipPath>
                   </defs>
                 </svg> */}
-                <img src={titleImg} style={{ width: '76%', marginTop: '-10px' }} />
+                <img src={titleImg} style={{ width: '60%' }} />
               </a>
             </div>
             <div
@@ -1287,11 +1251,11 @@ export default function Header() {
                         </li>
                       </Tooltip>
                     </Badge>
-                    {location?.pathname === "/productpage"  &&<li onClick={toggleOverlay} style={{}}>
+                    <li onClick={toggleOverlay} style={{}}>
                       <IoSearchOutline
                         style={{ height: "20px", cursor: "pointer", width: "20px" }}
                       />
-                    </li>}
+                    </li>
                     <Badge
                       badgeContent={getCartListCount}
                       max={1000}
@@ -1360,7 +1324,8 @@ export default function Header() {
           <div
             className="mobileViewFirstDiv2"
           >
-            <a href="/">
+            <a href="/" className="MainlogogMobileImageATag">
+              {/* <img src={titleImg} /> */}
               <img src={titleImg} className="MainlogogMobileImage" />
             </a>
           </div>
@@ -1542,7 +1507,7 @@ export default function Header() {
                     </Tooltip>
                   </Badge>
 
-                  {location?.pathname === "/productpage"  && <li onClick={toggleOverlay} style={{ listStyle: 'none', textAlign: 'center', marginInline: '10px' }}>
+                  <li onClick={toggleOverlay} style={{ listStyle: 'none', textAlign: 'center', marginInline: '10px' }}>
                     <IoSearchOutline
                       style={{
                         height: "20px", cursor: "pointer", width: "20px",
@@ -1550,7 +1515,7 @@ export default function Header() {
                       }}
                       className="mobileViewSmilingTop2Icone"
                     />
-                  </li>}
+                  </li>
                   <Badge
                     badgeContent={getCartListCount}
                     max={1000}

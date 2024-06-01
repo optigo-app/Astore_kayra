@@ -261,6 +261,10 @@
         margin-bottom: 0px;
         margin: 0px 20px;
     }
+
+    .prodDetailWhitecont{
+        margin: 0px 7px!important;
+    }
 }
 
 @media screen and (max-width:1440px) {
@@ -298,8 +302,12 @@
         width: auto
     }
 
+    .srprodetail1{
+        min-height: 300px!important;
+    }
     .smilingDeatilPageMainImage {
         margin-left: 0px !important;
+        min-height: 300px!important;
     }
 
     .srprodetail2 {

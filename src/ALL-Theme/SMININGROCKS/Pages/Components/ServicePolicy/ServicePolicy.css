@@ -39,4 +39,29 @@
     padding-inline: 5%;
 
     }
+
+    .serviceTitle{
+        padding-block: 0px!important;
+    }
+
+    .searvicemobileMain{
+        padding-top: 40px!important;
+    }
+
+
+    .servicesTitleText{
+        font-size: 25px!important;
+    }
+
+    .smiling-ServiceMainTitle{
+        font-size: 22px!important;
+    }
+
+    .smiling-serviceSubTitle{
+        font-size: 20px!important;
+    }
+
+    .smiling-serviceDesc{
+        font-size: 12px!important;
+    }
 }

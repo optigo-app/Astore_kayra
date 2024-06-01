@@ -1,54 +1,48 @@
-
-
-.shopbycategoryTitle{
+.shopbycategoryTitle {
     font-family: 'FreightDispProMedium-Regular,Times New Roman,serif';
     font-size: 40px;
     text-align: center;
     color: rgb(125, 127, 133);
 }
 
-.shopbycategoryDesc{
+.shopbycategoryDesc {
     display: flex;
     justify-content: center;
 }
 
-.shopByCategoryBox{
-    margin: 30px;  
+.shopByCategoryBox {
+    margin: 30px;
 }
-.shopByCategoryBoxImg{
+
+.shopByCategoryBoxImg {
     height: 200px;
     width: 200px;
 }
 
-.shopByCategoryBox1Main{
+.shopByCategoryBox1Main {
     display: flex;
 }
 
-.shopByCategoryBox2Main{
+.shopByCategoryBox2Main {
     display: flex;
+}
+
+@media screen and (max-width: 1000px) {
+    .shopbycategoryTitle {
+        font-size: 20px !important;
+        margin: 5px 0px 0px 0px!important;
+    }
 }
 
 @media screen and (max-width: 550px) {
 
-    .shopbycategoryTitle{
-        margin-top: 50px!important;
+    .shopByCategoryBox {
+        width: 50% !important;
+        margin: 5px !important;
     }
 
-    .shopByCategoryBox{
-        width: 50%!important;
-        margin: 5px!important;
-    }
-
-    .shopByCategoryBoxImg{
-        height: 80%!important;
-        width: 100%!important;
-    }
-
-    .shopbycategoryTitle{
-        font-size: 40px!important;
-    }
-
-    .shopByCategoryBox{
-        padding: 20px!important;
+    .shopByCategoryBoxImg {
+        height: 80% !important;
+        width: 100% !important;
     }
 }

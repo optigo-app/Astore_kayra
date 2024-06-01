@@ -58,6 +58,11 @@
     }
 
     .shopifyTitle{
-        font-size: 22px!important;
+        font-size: 20px!important;
+        margin: 0px;
+    }
+
+    .shopifyDescription{
+        font-size: 12px!important;
     }
 }
