@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './FestiveFinds.css'
 import { useNavigate } from 'react-router-dom'
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { loginState } from '../../../../../../Recoil/atom';
+import { loginState, storeInitRecoilatom } from '../../../../../../Recoil/atom';
 import { storImagePath } from '../../../../Utils/globalFunctions/GlobalFunction';
 
 export default function FestiveFinds() {
 
     const navigation = useNavigate();
     const islogin = useRecoilValue(loginState);
-
+    const getStoreInit = useRecoilValue(storeInitRecoilatom)
 
     const handleNaviagtion = () => {
         islogin === 'true' && navigation('/productpage');
@@ -18,7 +18,8 @@ export default function FestiveFinds() {
     return (
         <div>
             <div className='FestiveMainImage'>
-                <img src={`${storImagePath()}/images/HomePage/Promo/Banner/PromoBanner1.jpg`} style={{ width: '100%' }} alt={"#promoBanner1"} />
+                {/* <img src={`${storeInit?.UploadLogicalPath}/${storeInit?.ukey}/${storeInit?.ufcc}/images/HomePage/Promo/Banner/PromoBanner1.jpg`} style={{ width: '100%' }} alt={"#promoBanner1"} /> */}
+                <img src={`${getStoreInit}/images/HomePage/Promo/Banner/PromoBanner1.jpg`} style={{ width: '100%' }} loading='lazy' alt={"#promoBanner1"} />
                 {islogin === 'true' && <div className='festiveBox'>
                     <p className='smilingFestiMainTitle1' style={{ color: 'gray' }}>LAB GROWN DIAMONDS</p>
                     <p className='smilingFestiMainTitle2' style={{ color: 'gray', fontSize: '40px', margin: '0px' }}>Festive Finds!</p>

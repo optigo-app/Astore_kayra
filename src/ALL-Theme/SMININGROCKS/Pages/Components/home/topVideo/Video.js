@@ -80,18 +80,21 @@
 import React, { useState, useRef } from "react";
 import "./Video.css";
 import { storImagePath } from "../../../../Utils/globalFunctions/GlobalFunction";
+import { storeInitRecoilatom } from "../../../../../../Recoil/atom";
+import { useRecoilValue } from "recoil";
 
 export default function Video() {
   const [loading, setLoading] = useState(false);
   const [videoStarted, setVideoStarted] = useState(false);
   const videoRef = useRef(null);
+  const getStoreInit = useRecoilValue(storeInitRecoilatom)
 
   const handleVideoLoad = () => {
     setLoading(false);
     // Unmute the video once it's loaded
-  setTimeout(() => {
+  // setTimeout(() => {
    
-  }, 0);
+  // }, 0);
 
   videoRef.current.controls = false;
   };
@@ -113,7 +116,7 @@ export default function Video() {
         onLoadedData={handleVideoLoad}
         onPlay={handleVideoPlay}
       >
-        <source src={`${storImagePath()}/images/HomePage/MainBanner/videos/HomepageMainBannerVideo.mp4`} type="video/mp4" />
+        <source src={`${getStoreInit}/images/HomePage/MainBanner/videos/HomepageMainBannerVideo.mp4`} type="video/mp4" />
       </video>
     </div>
   );

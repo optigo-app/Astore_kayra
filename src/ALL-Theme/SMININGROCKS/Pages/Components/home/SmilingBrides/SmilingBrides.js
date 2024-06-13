@@ -18,7 +18,7 @@ export default function SmilingBrides() {
                     <button className='enagementBtn'>ENGAGEMENT COLLECTION</button>
                 </div>
                 <div className='smlingBridesImages'>
-                    <img src={`${storImagePath()}/images/HomePage/Promo/Banner/PromoBanner2.png`} className='smilingMainImages' alt={''}/>
+                    <img loading='lazy' src={`${storImagePath()}/images/HomePage/Promo/Banner/PromoBanner2.png`} className='smilingMainImages' alt={''}/>
                 </div>
             </div>
         </div>

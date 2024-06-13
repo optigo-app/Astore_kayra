@@ -26,43 +26,42 @@ export default function Home() {
   const location = useLocation();
 
   useEffect(() => {
-    const fetchData = async () => {
-      // const APIURL = 'http://zen/api/';
-      const APIURL = 'https://api.optigoapps.com/storev26/store.aspx';
-      // const APIURL = 'https://api.optigoapps.com/test/store.aspx';
+    // const fetchData = async () => {
+    //   // const APIURL = 'http://zen/api/';
+    //   const APIURL = 'https://api.optigoapps.com/storev26/store.aspx';
+    //   // const APIURL = 'https://api.optigoapps.com/test/store.aspx';
 
-      const header = {
-        Authorization: 'Bearer optigo_json_api',
-        domain:  (window.location.hostname === 'localhost' || window.location.hostname === 'zen') ? 'astore.orail.co.in' : window.location.hostname,
-        version: 'V6',
-        sp: "1"
-        // domain: 'zen',
-      };
-      // const header = {
-      //   Authorization: 'Bearer optigo_json_api',
-      //   YearCode:'',
-      //   version: '',
-      //   domain: 'zen',
-      //   // domain: 'zen',
-      // };
+    //   const header = {
+    //     Authorization: 'Bearer optigo_json_api',
+    //     domain:  (window.location.hostname === 'localhost' || window.location.hostname === 'zen') ? 'astore.orail.co.in' : window.location.hostname,
+    //     version: 'V6',
+    //     sp: "1"
+    //     // domain: 'zen',
+    //   };
+    //   // const header = {
+    //   //   Authorization: 'Bearer optigo_json_api',
+    //   //   YearCode:'',
+    //   //   version: '',
+    //   //   domain: 'zen',
+    //   //   // domain: 'zen',
+    //   // };
 
-      try {
-        const body = {
-          "con": "{\"id\":\"\",\"mode\":\"store_init\"}",
-          "p": "",
-          "f": "formname (init)",
-        };
-        const response = await axios.post(APIURL, body, { headers: header });
-        if (response.status === 200) {
-          localStorage.setItem('UploadLogicalPath', response.data.Data.rd[0].UploadLogicalPath);
-          localStorage.setItem('storeInit', JSON.stringify(response.data.Data.rd[0]));
-          localStorage.setItem('myAccountFlags', JSON.stringify(response.data.Data.rd1));
-        }
-      } catch (error) {
-        console.error('Error:', error );
-      }
-    }
-
+    //   try {
+    //     const body = {
+    //       "con": "{\"id\":\"\",\"mode\":\"store_init\"}",
+    //       "p": "",
+    //       "f": "formname (init)",
+    //     };
+    //     const response = await axios.post(APIURL, body, { headers: header });
+    //     if (response.status === 200) {
+    //       localStorage.setItem('UploadLogicalPath', response.data.Data.rd[0].UploadLogicalPath);
+    //       localStorage.setItem('storeInit', JSON.stringify(response.data.Data.rd[0]));
+    //       localStorage.setItem('myAccountFlags', JSON.stringify(response.data.Data.rd1));
+    //     }
+    //   } catch (error) {
+    //     console.error('Error:', error );
+    //   }
+    // }
 
     const getMetalTypeData = async () => {
       try {
@@ -257,7 +256,7 @@ export default function Home() {
 
     }
 
-    fetchData();
+    // fetchData();
     currencyCombo();
     getColorImgData();
     getMetalTypeData();
