@@ -2230,28 +2230,32 @@ const ProductList = () => {
                         >
                           {products?.TitleLine}
                         </p>
+                        <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px', display: 'flex' }}>- {products?.designno}</p>
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginInline: '5px' }}>
+                      <div style={{ marginInline: '5px' }}>
                         <div className="mobileDeatilDiv1" >
-                          {ismetalWShow === 1 &&
-                            <div className="mobileShowAllDeatil">
-                              <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>NWT : <span style={{ fontWeight: 600, marginRight: '15px' }}>{products?.updNWT}</span></p>
+                          <div className="mobileDeatilDiv1Sub1" >
+                            {ismetalWShow === 1 &&
+                              <div className="mobileShowAllDeatil">
+                                <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>NWT : <span style={{ fontWeight: 600, marginRight: '15px' }}>{products?.updNWT}</span></p>
+                              </div>}
+                            {isGrossWShow === 1 && <div className="mobileShowAllDeatil">
+                              <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>GWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{products?.updGWT}</span></p>
                             </div>}
-                          {isGrossWShow === 1 && <div className="mobileShowAllDeatil">
-                            <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>GWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{products?.updGWT}</span></p>
-                          </div>}
+                          </div>
+                          <div className="mobileDeatilDiv1Sub1" >
 
-                          {((isDaaimongWShow || isDaaimongWShow) === 1 && (products?.diamondweight !== 0 || products?.diamondpcs !== 0)) && <div className="mobileShowAllDeatil">
-                            <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>DWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{(isDaaimongWShow === 1 && products?.diamondweight !== 0) && products?.updDWT + '/'}  {(isDaaimonPShow === 1 && products?.diamondpcs !== 0) && products?.updDPCS}</span></p>
-                          </div>}
+                            {((isDaaimongWShow || isDaaimongWShow) === 1 && (products?.diamondweight !== 0 || products?.diamondpcs !== 0)) && <div className="mobileShowAllDeatil">
+                              <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>DWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{(isDaaimongWShow === 1 && products?.diamondweight !== 0) && products?.updDWT + '/'}  {(isDaaimonPShow === 1 && products?.diamondpcs !== 0) && products?.updDPCS}</span></p>
+                            </div>}
 
-                          {((isStoneWShow || isStonePShow) === 1 && (products?.totalcolorstoneweight !== 0 || products?.totalcolorstonepcs !== 0)) && <div className="mobileShowAllDeatil">
-                            <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>CWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{(isStoneWShow === 1 && products?.totalcolorstoneweight !== 0) && products?.updCWT + '/'}  {(isStonePShow === 1 && products?.totalcolorstonepcs !== 0) && products?.updCPCS}</span></p>
-                          </div>}
+                            {((isStoneWShow || isStonePShow) === 1 && (products?.totalcolorstoneweight !== 0 || products?.totalcolorstonepcs !== 0)) && <div className="mobileShowAllDeatil">
+                              <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px' }}>CWT : <span style={{ fontWeight: 600, marginRight: '10px' }}>{(isStoneWShow === 1 && products?.totalcolorstoneweight !== 0) && products?.updCWT + '/'}  {(isStonePShow === 1 && products?.totalcolorstonepcs !== 0) && products?.updCPCS}</span></p>
+                            </div>}
+                          </div>
                         </div>
                         <div>
-                          <p className="mobileShowAllDeatilP" style={{ margin: '0px', fontSize: '13px', display: 'flex' }}>{products?.designno}</p>
-                          <p style={{ fontSize: "14px", fontWeight: 'bold', display: 'flex', justifyContent: 'center' }}>
+                          <p className="productDeatilPriceMain" style={{ fontSize: "14px", fontWeight: 'bold', display: 'flex', justifyContent: 'center' }}>
                             {isMetalTCShow === 1 && <span>
                               {/* {products?.MetalTypeName} - */}
                               {products?.updMC} -

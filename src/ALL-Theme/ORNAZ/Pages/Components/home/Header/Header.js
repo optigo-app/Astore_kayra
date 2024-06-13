@@ -146,10 +146,6 @@ export default function Header({ name }) {
     []
   );
 
-  const handleLogOut = () => {
-    setIsLogin(false)
-    setShowLogout(true)
-  }
   return (
     <>
       {/* top-header */}

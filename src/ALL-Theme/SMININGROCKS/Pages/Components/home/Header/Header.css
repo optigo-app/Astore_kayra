@@ -176,17 +176,14 @@
     background: #fff;
     top: 72px;
     left: 0;
+    display: none;
+    transition: all 0.5s ease;
     box-shadow: 0 0 25px 0 rgba(200, 200, 200, .5);
     /* border: 1px solid black; */
 }
 
 .nav-li-shop-main:hover {
     height: 150px;
-}
-
-.shop-dropdown {
-    display: none;
-    transition: all 0.5s ease;
 }
 
 .shop-dropdown.open {
@@ -197,7 +194,6 @@
     margin-left: 6%;
     margin-top: 37px;
     transition: all 0.5s ease;
-
 }
 
 .nav-li-smining {
@@ -315,7 +311,6 @@
     display: inline-block;
     height: 22px;
 }
-
 .nav-li-smining::before {
     content: '';
     position: absolute;
@@ -326,7 +321,6 @@
     background-color: white;
     transition: width 0.3s ease-out;
 }
-
 .nav-li-smining:hover::before {
     width: 100%;
     left: 0;

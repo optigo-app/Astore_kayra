@@ -619,7 +619,7 @@ export default function Header() {
               </div>)}
             </div>
             <div className="smlingDraweOverlayMain">
-              <div className="drawrTitlediv">
+              {islogin === 'true' && (<div className="drawrTitlediv">
                 <p
                   style={{
                     margin: "0px",
@@ -644,8 +644,8 @@ export default function Header() {
                     }
                   </li>
                 </ul>
-              </div>
-              <div className="drawrTitlediv" style={{ marginTop: "20px" }}>
+              </div>)}
+              {islogin === 'true' && (<div className="drawrTitlediv" style={{ marginTop: "20px" }}>
                 <p
                   style={{
                     margin: "0px",
@@ -675,8 +675,8 @@ export default function Header() {
                     }
                   </li>
                 </ul>
-              </div>
-              <div className="drawrTitlediv" style={{ marginTop: "20px" }}>
+              </div>)}
+              {islogin === 'true' && (<div className="drawrTitlediv" style={{ marginTop: "20px" }}>
                 <p
                   style={{
                     margin: "0px",
@@ -702,7 +702,7 @@ export default function Header() {
                     }
                   </li>
                 </ul>
-              </div>
+              </div>)}
               {/* <div onClick={() => { toggleDrawerOverlay(); navigation("/impact"); }}>
                 <p className="drawrTitle">IMPACT</p>
               </div> */}
@@ -733,14 +733,14 @@ export default function Header() {
                   </div>
                 )
                 }
-                <p
+                {islogin === 'true' && (<p
                   style={{ color: "white", marginTop: "10px", fontSize: '13px', fontWeight: 500, letterSpacing: '1' }}
                   onClick={() => { toggleDrawerOverlay(); navigation("/myWishList"); }}
                 >
                   Wishlist
-                </p>
+                </p>)}
               </div>
-              <div
+              {islogin === 'true' && (<div
                 style={{
                   display: "flex",
                   borderBottom: "1px solid white",
@@ -771,7 +771,7 @@ export default function Header() {
                     marginInline: "5px",
                   }}
                 />
-              </div>
+              </div>)}
             </div>
           </div>
         </>
@@ -946,7 +946,8 @@ export default function Header() {
                         />
                       </li>
                     </Tooltip>
-                  </Badge></>}
+                  </Badge></>
+              }
             </ul>
           </div>
         </div>
