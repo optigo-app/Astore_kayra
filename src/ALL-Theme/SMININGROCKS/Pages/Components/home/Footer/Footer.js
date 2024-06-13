@@ -65,7 +65,7 @@ export default function Footer() {
                     <span style={{fontSize:'6px',color:'#7D7f85'}}>R66B1-V66.23-04-2024.06:20PM</span>
                 </div> */}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <img src='https://smilingrocks.com/cdn/shop/t/157/assets/passport.svg?v=152807140915720846441675380017' style={{ height: '80px', cursor: 'pointer', paddingBlock: '10px' }} />
+                <img loading='lazy' src='https://smilingrocks.com/cdn/shop/t/157/assets/passport.svg?v=152807140915720846441675380017' style={{ height: '80px', cursor: 'pointer', paddingBlock: '10px' }} />
             </div>
         </div>
     )

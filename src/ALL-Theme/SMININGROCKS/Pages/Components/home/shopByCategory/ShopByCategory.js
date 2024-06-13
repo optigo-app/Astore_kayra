@@ -24,21 +24,21 @@ export default function ShopByCategory() {
         }} className='smilingSopCateMain'>
           <div className='shopByCategoryBox1Main'>
             <div className='shopByCategoryBox'>
-              <img src={`${storImagePath()}/images/HomePage/shopByCategory/shopByCategory1.png`} className='shopByCategoryBoxImg' />
+              <img loading='lazy' src={`${storImagePath()}/images/HomePage/shopByCategory/shopByCategory1.png`} className='shopByCategoryBoxImg' />
               <p style={{ fontWeight: 500, color: Colors.fontColor, textAlign: 'center' }}>EARRING</p>
             </div>
             <div className='shopByCategoryBox'>
-              <img src={`${storImagePath()}/images/HomePage/shopByCategory/shopByCategory2.png`} className='shopByCategoryBoxImg' />
+              <img loading='lazy' src={`${storImagePath()}/images/HomePage/shopByCategory/shopByCategory2.png`} className='shopByCategoryBoxImg' />
               <p style={{ fontWeight: 500, color: Colors.fontColor, textAlign: 'center' }}>NACKLACES</p>
             </div >
           </div>
           <div className='shopByCategoryBox2Main'>
             <div className='shopByCategoryBox'>
-              <img src={`${storImagePath()}/images/HomePage/shopByCategory/shopByCategory3.png`} className='shopByCategoryBoxImg' />
+              <img loading='lazy' src={`${storImagePath()}/images/HomePage/shopByCategory/shopByCategory3.png`} className='shopByCategoryBoxImg' />
               <p style={{ fontWeight: 500, color: Colors.fontColor, textAlign: 'center' }}>PENDANT</p>
             </div>
           <div className='shopByCategoryBox'>
-              <img src={`${storImagePath()}/images/HomePage/shopByCategory/shopByCategory4.png`} className='shopByCategoryBoxImg' />
+              <img loading='lazy' src={`${storImagePath()}/images/HomePage/shopByCategory/shopByCategory4.png`} className='shopByCategoryBoxImg' />
               <p style={{ fontWeight: 500, color: Colors.fontColor, textAlign: 'center' }}>RING</p>
             </div>
           </div>
